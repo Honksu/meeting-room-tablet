@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.View;
+import android.widget.Button;
 import android.widget.DigitalClock;
 import android.widget.LinearLayout;
 import android.widget.TextClock;
@@ -58,6 +60,16 @@ public class LobbyActivity extends ReservatorActivity
     TextView clock;
     @BindView(R.id.linearLayout1)
     LinearLayout container;
+    @BindView(R.id.recognizeButton)
+    Button recognizeButton;
+
+    View.OnClickListener recognizeOnClickListerner = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            final Intent i = new Intent(LobbyActivity.this, PersonalActivity.class);
+            startActivity(i);
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +79,7 @@ public class LobbyActivity extends ReservatorActivity
         ab = getResApplication().getAddressBook();
         clock.setTypeface(
                 Typeface.createFromAsset(getAssets(), "fonts/EHSMB.TTF"));
+        recognizeButton.setOnClickListener(recognizeOnClickListerner);
     }
 
     @Override
