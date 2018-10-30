@@ -16,8 +16,7 @@ android {
         testApplicationId "com.futurice.android.reservator.test"
         testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
-
-    /*
+/*
     signingConfigs {
         release {
             keyAlias 'futurice'
@@ -27,8 +26,7 @@ android {
             storeFile file("../keystore/reservator_release.keystore")
         }
 
-    }
-    */
+    } */
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
@@ -51,13 +49,13 @@ android {
             debuggable true
             testCoverageEnabled true
         }
-        release {
-            // signingConfig signingConfigs.release
+/*        release {
+            signingConfig signingConfigs.release
             versionNameSuffix '-RELEASE'
             shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
+        } */
     }
 
     repositories {
