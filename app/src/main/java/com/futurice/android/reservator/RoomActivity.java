@@ -73,7 +73,6 @@ public class RoomActivity extends ReservatorActivity implements OnMenuItemClickL
     @BindView(R.id.seeAllRoomsButton)
     Button seeAllRoomsButton;
 
-
     /**
      * Helper for starting a RoomActivity
      *
@@ -88,6 +87,7 @@ public class RoomActivity extends ReservatorActivity implements OnMenuItemClickL
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.room_activity);

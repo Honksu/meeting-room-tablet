@@ -2,8 +2,6 @@ apply plugin: 'com.android.application'
 apply from: "$project.rootDir/tools/script-lint.gradle"
 apply from: "$project.rootDir/tools/script-findbugs.gradle"
 apply from: "$project.rootDir/tools/script-pmd.gradle"
-
-
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -19,6 +17,7 @@ android {
         testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
 
+    /*
     signingConfigs {
         release {
             keyAlias 'futurice'
@@ -29,6 +28,7 @@ android {
         }
 
     }
+    */
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
@@ -52,7 +52,7 @@ android {
             testCoverageEnabled true
         }
         release {
-            signingConfig signingConfigs.release
+            // signingConfig signingConfigs.release
             versionNameSuffix '-RELEASE'
             shrinkResources false
             minifyEnabled false
@@ -71,4 +71,8 @@ android {
         compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
         annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.butterknifeVersion"
     }
+}
+
+dependencies {
+    implementation project(':openCVLibrary343')
 }
