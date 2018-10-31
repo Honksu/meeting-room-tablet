@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,39 +24,45 @@ import butterknife.ButterKnife;
 
 
 public class PersonalActivity extends Activity {
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    //String photoPath;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private String photoPath;
+    private boolean photoTaken = false;
 
-    @BindView(R.id.picture)
-    ImageView pic;
-/*    @BindView(R.id.changeButton)
-    Button changeButton;
-
-    View.OnClickListener changeOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            // TODO: koodia
-        }
-    }; */
+    @BindView(R.id.photo)
+    ImageView photoImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            photoPath = savedInstanceState.getString("photo_path");
+            photoTaken = savedInstanceState.getBoolean("photo_taken");
+        }
         setContentView(R.layout.activity_personal);
         ButterKnife.bind(this);
-        dispatchTakePictureIntent();
+        if (!photoTaken) {
+            dispatchTakePictureIntent();
+        }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (photoPath != null) {
+            outState.putString("photo_path", photoPath);
+        }
+        outState.putBoolean("photo_taken", photoTaken);
+        super.onSaveInstanceState(outState);
+    }
 
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            setPhoto();
         }
     }
 
 
-/*    private void dispatchTakePictureIntent() {
+    private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             File photoFile = null;
@@ -64,17 +71,16 @@ public class PersonalActivity extends Activity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            String authorities = getApplicationContext().getPackageName() + ".fileprovider";
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.wackymemes.android.fileprovider",
+                Uri photoURI = FileProvider.getUriForFile(this, authorities,
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
-    } */
+    }
 
-/*
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date());
         String imageFileName = "FREC_" + timeStamp;
@@ -86,19 +92,32 @@ public class PersonalActivity extends Activity {
         );
         photoPath = image.getAbsolutePath();
         return image;
-    } */
+    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            pic.setImageBitmap(imageBitmap);
-            /*
-            File imgFile = new File(photoPath);
-            if (imgFile.exists()) {
-                Bitmap fullBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            } */
+    private void setPhoto() {
+        int targetW = photoImageView.getMeasuredWidth();
+        int targetH = photoImageView.getMeasuredHeight();
+
+        if (targetH == 0 || targetW == 0) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            targetH = metrics.heightPixels;
+            targetW = metrics.widthPixels;
         }
+
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(photoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(photoPath, bmOptions);
+        photoImageView.setImageBitmap(bitmap);
     }
 }

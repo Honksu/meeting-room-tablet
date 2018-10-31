@@ -5,16 +5,11 @@
     android:orientation="horizontal"
     android:padding="0dip">
 
-    <!--
-    <Button
-        android:text="Change pic"
-        android:id="@+id/changeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    -->
     <ImageView
         android:layout_gravity="center"
-        android:id="@+id/picture"
+        android:id="@+id/photo"
+        android:scaleType="fitCenter"
+        android:layout_margin="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
