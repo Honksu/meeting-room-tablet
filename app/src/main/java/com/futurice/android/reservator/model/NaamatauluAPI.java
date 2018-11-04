@@ -1,49 +1,68 @@
 package com.futurice.android.reservator.model;
 
+import android.app.DownloadManager;
+import android.os.AsyncTask;
+import android.util.Log;
+
 import org.json.JSONObject;
 
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
-public class NaamatauluAPI {
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
-    static final String baseUrl = "https://naamataulu-backend.herokuapp.com/api/v1/";
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-    public NaamatauluAPI(){
+import static android.content.ContentValues.TAG;
+import static org.opencv.android.CameraRenderer.LOGTAG;
 
+
+public class NaamatauluAPI extends AsyncTask<File, Void, String> {
+
+    static final String baseUrl = "http://api.wackymemes.com/api/v1/";
+    static final String subUrl = "users/recognize/";
+    OkHttpClient client = new OkHttpClient();
+
+    @Override
+    protected String doInBackground(File... file) {
+        RequestBody formBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("faces", file[0].getName(),
+                        RequestBody.create(MediaType.parse("image/png"), file[0]))
+                .build();
+        Request request = new Request.Builder().url(baseUrl + subUrl).post(formBody).addHeader("Accept", "application/json; q=0.5").build();
+        Response response = null;
+        try {
+            response = this.client.newCall(request).execute();
+        } catch (IOException e) {
+            Log.e(LOGTAG, "Face upload failed: " + e);
+        }
+        String result = null;
+        try {
+            result = response.body().string();
+        } catch (IOException e) {
+            Log.e(LOGTAG, "Invalid result: " + e);
+        }
+
+        return result;
     }
 
-    public void post(String subUrl, String data) {
-        String urlString = baseUrl + subUrl; // URL to call
-        OutputStream out = null;
-
-        try {
-            URL url = new URL(urlString); //in the real code, there is an ip and a port
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Accept","application/json");
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.connect();
-
-            JSONObject jsonParam = new JSONObject();
-            jsonParam.put("username", "testi");
-            jsonParam.put("face_features", "testi");
-            jsonParam.put("face_recognition_implementer", "testi");
-
-            DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-            os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
-
-            os.flush();
-            os.close();
-
-            conn.disconnect();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+    @Override
+     protected void onPostExecute(String result) {
+        Log.e(LOGTAG, "ASDQWEQASDQWDASD " + result);
     }
 }

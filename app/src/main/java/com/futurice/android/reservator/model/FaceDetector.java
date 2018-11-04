@@ -16,7 +16,9 @@ import org.opencv.objdetect.CascadeClassifier;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static org.opencv.android.CameraRenderer.LOGTAG;
 
@@ -40,7 +42,7 @@ public class FaceDetector {
         String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE};
         ActivityCompat.requestPermissions(this.activity, permissions, 0);
 
-        String file = Environment.getExternalStorageDirectory().getAbsolutePath() +"/Download/"+fileName;
+        String file = fileName;
         File imgFile = new File(file);
 
         int size = (int) imgFile.length();
@@ -57,17 +59,17 @@ public class FaceDetector {
 
         Mat mat = Imgcodecs.imdecode(new MatOfByte(bytes), Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
 
-        Imgcodecs.imwrite(context.getFilesDir().getPath() + "/" + destFileName, mat); // TODO this is really really bad
+        Imgcodecs.imwrite(context.getFilesDir().getPath() + "/" + destFileName, mat);
     }
 
-    public void cropFaces (String fileName) {
+    public File cropLargestFace (String fileName) {
         //transferImgFromDownloadToInternal(fileName, "face.png");
         String path = context.getFilesDir().getPath() + "/face.png";
         Mat img = Imgcodecs.imread(path);
 
         if (img.empty()) {
             Log.e(LOGTAG, "Reading image from " + path + " failed");
-            return;
+            return null;
         }
 
         MatOfRect faces = new MatOfRect();
@@ -75,20 +77,36 @@ public class FaceDetector {
         try {
             Mat grayscaleImage = new Mat(img.width(), img.height(), CvType.CV_8UC4);
             Imgproc.cvtColor(img, grayscaleImage, Imgproc.COLOR_RGBA2RGB);
-            String classifierPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/haarcascade_frontalface_alt.xml";
-            CascadeClassifier cascadeClassifier = new CascadeClassifier(classifierPath);
+
+            File classifierFile = new File(context.getCacheDir()+"/haarcascade_frontalface_alt.xml");
+            if (!classifierFile.exists()) try {
+
+                InputStream is = context.getAssets().open("haarcascade_frontalface_alt.xml");
+                int size = is.available();
+                byte[] buffer = new byte[size];
+                is.read(buffer);
+                is.close();
+
+
+                FileOutputStream fos = new FileOutputStream(classifierFile);
+                fos.write(buffer);
+                fos.close();
+            } catch (Exception e) { throw new RuntimeException(e); }
+
+            CascadeClassifier cascadeClassifier = new CascadeClassifier(classifierFile.getPath());
             if (cascadeClassifier != null) {
                 cascadeClassifier.detectMultiScale(img, faces, 1.1, 5, 2,
                         new Size(50, 50), new Size());
             } else {
-                Log.e(LOGTAG, "Reading classifier file from " + classifierPath+ " failed");
-                return;
+                Log.e(LOGTAG, "Reading classifier file from " + classifierFile.getPath() + " failed");
+                return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         Rect[] facesArray = faces.toArray();
+        Log.e(LOGTAG, "FACES FOUND: "+facesArray.length);
         double largestSize = 0;
         Rect largestFace = null;
         for (int i = 0; i < facesArray.length; i++) {
@@ -100,11 +118,13 @@ public class FaceDetector {
             //rectangle(img, facesArray[i].tl(), facesArray[i].br(), new Scalar(0, 255, 0, 255), 3); // for debugging
         }
 
-        Mat cropped = new Mat(img, largestFace);
+        if (largestFace != null) {
+            Mat cropped = new Mat(img, largestFace);
 
-        Imgcodecs.imwrite(context.getFilesDir().getPath() + "/" + "croppedFace.png", cropped);
+            Imgcodecs.imwrite(context.getFilesDir().getPath() + "/" + "croppedFace.png", cropped);
+        }
 
-        //naamaTaulu.post("/users", data);
+        return new File(context.getFilesDir().getPath() + "/" + "croppedFace.png");
     }
 
 }

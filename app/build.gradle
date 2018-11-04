@@ -67,6 +67,10 @@ android {
         compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
         compile "com.android.support:appcompat-v7:$rootProject.appCompatVesion"
         compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+        compile 'com.squareup.okhttp3:okhttp:3.9.1'
+        compile 'com.fasterxml.jackson.core:jackson-databind:2.8.5'
+        compile 'com.fasterxml.jackson.core:jackson-core:2.8.5'
+        compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.5'
         annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.butterknifeVersion"
     }
 }

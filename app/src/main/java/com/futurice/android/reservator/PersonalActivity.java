@@ -10,9 +10,13 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import com.futurice.android.reservator.model.FaceDetector;
+import com.futurice.android.reservator.model.NaamatauluAPI;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,11 +26,15 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static org.opencv.android.CameraRenderer.LOGTAG;
+
 
 public class PersonalActivity extends Activity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private String photoPath;
     private boolean photoTaken = false;
+
+    private FaceDetector faceDetector = new FaceDetector(this, (Activity)this);
 
     @BindView(R.id.photo)
     ImageView photoImageView;
@@ -58,6 +66,9 @@ public class PersonalActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             setPhoto();
+            faceDetector.transferImgFromDownloadToInternal(photoPath, "face.png");
+            File img = faceDetector.cropLargestFace(photoPath);
+            new NaamatauluAPI().execute(img);
         }
     }
 
