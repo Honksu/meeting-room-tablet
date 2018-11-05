@@ -12,8 +12,12 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.futurice.android.reservator.model.FaceDetector;
 import com.futurice.android.reservator.model.NaamatauluAPI;
 import com.futurice.android.reservator.model.UploadListener;
@@ -22,6 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +39,8 @@ public class PersonalActivity extends Activity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private String photoPath;
     private boolean photoTaken = false;
+    private String photoS;
+    private String username;
 
     private FaceDetector faceDetector = new FaceDetector(this, (Activity)this);
 
@@ -65,13 +73,30 @@ public class PersonalActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Log.d(LOGTAG, "Starting...");
             //faceDetector.transferImgFromDownloadToInternal(photoPath, "face.png");
             File img = faceDetector.cropLargestFace(photoPath);
+            photoS = img.getAbsolutePath();
             new NaamatauluAPI(new UploadListener() {
                 @Override
                 public void onUploadCompleted(String result) {
                     Log.d(LOGTAG, "Hello, " + result);
                     setPhoto();
+
+                    Map<String, String> myMap = new HashMap<String, String>();
+                    ObjectMapper mapper = new ObjectMapper();
+
+                    try {
+                        myMap = mapper.readValue(result, HashMap.class);
+                    } catch (JsonGenerationException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    username = myMap.get("username");
+                    Log.d(LOGTAG, "Hi, " + username);
                 }
             }).execute(img);
         }
@@ -131,7 +156,7 @@ public class PersonalActivity extends Activity {
 
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(photoPath, bmOptions);
+        BitmapFactory.decodeFile(photoS, bmOptions);
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
@@ -141,7 +166,13 @@ public class PersonalActivity extends Activity {
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(photoPath, bmOptions);
+        Bitmap bitmap = BitmapFactory.decodeFile(photoS, bmOptions);
         photoImageView.setImageBitmap(bitmap);
+    }
+
+    public void goToLanding(View view) {
+        Intent i = new Intent(this, LandingActivity.class);
+        i.putExtra("username", username);
+        startActivity(i);
     }
 }

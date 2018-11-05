@@ -56,6 +56,7 @@ public class NaamatauluAPI extends AsyncTask<File, Void, String> {
             }
         } else {
             result = response.message();
+            Log.e(LOGTAG, "Ja vihkoon...");
         }
 
         return result;

@@ -126,6 +126,8 @@ public class FaceDetector {
             Imgcodecs.imwrite(path, img); // Rewrite the image to show in the screen with the one that has rectacles on the faces
         }
 
+        Log.d(LOGTAG, "Sendind photo");
+
         return new File(context.getFilesDir().getPath() + "/" + "croppedFace.png");
     }
 

@@ -5,6 +5,13 @@
     android:orientation="horizontal"
     android:padding="0dip">
 
+    <Button
+        android:id="@+id/landingButton"
+        android:text="Go to landing screen"
+        android:onClick="goToLanding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <ImageView
         android:layout_gravity="center"
         android:id="@+id/photo"
