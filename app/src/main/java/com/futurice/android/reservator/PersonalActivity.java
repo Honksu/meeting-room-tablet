@@ -11,12 +11,11 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.futurice.android.reservator.model.FaceDetector;
 import com.futurice.android.reservator.model.NaamatauluAPI;
+import com.futurice.android.reservator.model.UploadListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,8 +27,8 @@ import butterknife.ButterKnife;
 
 import static org.opencv.android.CameraRenderer.LOGTAG;
 
-
 public class PersonalActivity extends Activity {
+
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private String photoPath;
     private boolean photoTaken = false;
@@ -65,13 +64,17 @@ public class PersonalActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            setPhoto();
-            faceDetector.transferImgFromDownloadToInternal(photoPath, "face.png");
+            //faceDetector.transferImgFromDownloadToInternal(photoPath, "face.png");
             File img = faceDetector.cropLargestFace(photoPath);
-            new NaamatauluAPI().execute(img);
+            new NaamatauluAPI(new UploadListener() {
+                @Override
+                public void onUploadCompleted(String result) {
+                    Log.d(LOGTAG, "Hello, " + result);
+                    setPhoto();
+                }
+            }).execute(img);
         }
     }
-
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

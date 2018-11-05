@@ -16,6 +16,7 @@ android {
         testApplicationId "com.futurice.android.reservator.test"
         testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
+
 /*
     signingConfigs {
         release {

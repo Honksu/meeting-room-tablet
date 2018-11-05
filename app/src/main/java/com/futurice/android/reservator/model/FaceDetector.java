@@ -21,12 +21,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.opencv.android.CameraRenderer.LOGTAG;
+import static org.opencv.imgproc.Imgproc.rectangle;
 
 public class FaceDetector {
 
     private Context context;
     private Activity activity;
-    private NaamatauluAPI naamaTaulu = new NaamatauluAPI();
 
     public FaceDetector(Context context, Activity activity) {
         this.context = context;
@@ -64,8 +64,9 @@ public class FaceDetector {
 
     public File cropLargestFace (String fileName) {
         //transferImgFromDownloadToInternal(fileName, "face.png");
-        String path = context.getFilesDir().getPath() + "/face.png";
+        String path = fileName;
         Mat img = Imgcodecs.imread(path);
+        Log.d(LOGTAG, "IMG SIZE "+img.size());
 
         if (img.empty()) {
             Log.e(LOGTAG, "Reading image from " + path + " failed");
@@ -106,7 +107,7 @@ public class FaceDetector {
         }
 
         Rect[] facesArray = faces.toArray();
-        Log.e(LOGTAG, "FACES FOUND: "+facesArray.length);
+        Log.d(LOGTAG, "Found " + facesArray.length + " face(s)");
         double largestSize = 0;
         Rect largestFace = null;
         for (int i = 0; i < facesArray.length; i++) {
@@ -115,13 +116,14 @@ public class FaceDetector {
                 largestSize = faceSize;
                 largestFace = facesArray[i];
             }
-            //rectangle(img, facesArray[i].tl(), facesArray[i].br(), new Scalar(0, 255, 0, 255), 3); // for debugging
+            rectangle(img, facesArray[i].tl(), facesArray[i].br(), new Scalar(240, 15, 15, 255), 3);
         }
 
         if (largestFace != null) {
             Mat cropped = new Mat(img, largestFace);
 
             Imgcodecs.imwrite(context.getFilesDir().getPath() + "/" + "croppedFace.png", cropped);
+            Imgcodecs.imwrite(path, img); // Rewrite the image to show in the screen with the one that has rectacles on the faces
         }
 
         return new File(context.getFilesDir().getPath() + "/" + "croppedFace.png");
