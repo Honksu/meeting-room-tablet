@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -87,8 +88,12 @@ public class PersonalActivity extends Activity {
             }
             String authorities = getApplicationContext().getPackageName() + ".fileprovider";
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this, authorities,
-                        photoFile);
+                Uri photoURI = null;
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                    photoURI = Uri.fromFile(photoFile);
+                } else {
+                    photoURI = FileProvider.getUriForFile(this, authorities, photoFile);
+                }
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
@@ -98,7 +103,12 @@ public class PersonalActivity extends Activity {
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date());
         String imageFileName = "FREC_" + timeStamp;
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = null;
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        } else {
+            storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        }
         File image = File.createTempFile(
                 imageFileName,
                 ".jpg",
