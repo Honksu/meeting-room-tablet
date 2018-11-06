@@ -76,10 +76,14 @@ public class PersonalActivity extends Activity {
             Log.d(LOGTAG, "Starting...");
             //faceDetector.transferImgFromDownloadToInternal(photoPath, "face.png");
             File img = faceDetector.cropLargestFace(photoPath);
+            if (img == null)
+                return;
             photoS = img.getAbsolutePath();
             new NaamatauluAPI(new UploadListener() {
                 @Override
                 public void onUploadCompleted(String result) {
+                    if (result == null)
+                        return;
                     Log.d(LOGTAG, "Hello, " + result);
                     setPhoto();
 

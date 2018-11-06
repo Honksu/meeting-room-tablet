@@ -54,12 +54,12 @@ public class NaamatauluAPI extends AsyncTask<File, Void, String> {
             } catch (IOException e) {
                 Log.e(LOGTAG, "Invalid result: " + e);
             }
+            return result;
         } else {
             result = response.message();
-            Log.e(LOGTAG, "Ja vihkoon...");
+            Log.e(LOGTAG, "Face recognition failed: " + result);
+            return null;
         }
-
-        return result;
     }
 
     @Override
