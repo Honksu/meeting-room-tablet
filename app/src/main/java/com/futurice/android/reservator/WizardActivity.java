@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import com.futurice.android.reservator.common.PreferenceManager;
 import com.futurice.android.reservator.view.wizard
         .WizardAccountSelectionFragment;
+import com.futurice.android.reservator.view.wizard.WizardBackendUrlInput;
 import com.futurice.android.reservator.view.wizard
         .WizardDefaultRoomSelectionFragment;
 import com.futurice.android.reservator.view.wizard.WizardRoomSelectionFragment;
@@ -29,11 +30,14 @@ public final class WizardActivity extends AppIntro {
         final Fragment roomSelection = new WizardRoomSelectionFragment();
         final Fragment roomDefaultSelection =
                 new WizardDefaultRoomSelectionFragment();
+        final Fragment backendUrlInput =
+                new WizardBackendUrlInput();
 
 
         super.addSlide(calendarAccountSelection);
         super.addSlide(roomSelection);
         super.addSlide(roomDefaultSelection);
+        super.addSlide(backendUrlInput);
 
         showSkipButton(false);
         setProgressButtonEnabled(true);

@@ -79,7 +79,7 @@ public class PersonalActivity extends Activity {
             if (img == null)
                 return;
             photoS = img.getAbsolutePath();
-            new NaamatauluAPI(new UploadListener() {
+            new NaamatauluAPI(this, new UploadListener() {
                 @Override
                 public void onUploadCompleted(String result) {
                     if (result == null)

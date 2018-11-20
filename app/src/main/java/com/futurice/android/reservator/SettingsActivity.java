@@ -49,6 +49,7 @@ public class SettingsActivity extends ReservatorActivity {
     Button removeUserDataButton;
     @BindView(R.id.defaultReservationAccountLabel)
     TextView defaultReservationAccountLabel;
+    // TODO: add "change backend urls"-feature
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

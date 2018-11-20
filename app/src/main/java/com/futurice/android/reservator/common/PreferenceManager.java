@@ -32,6 +32,9 @@ public class PreferenceManager {
     final static String PREFERENCES_SELECTED_ROOM = "roomName";
     final static String PREFERENCES_CONFIGURED = "preferencedConfigured";
     final static String PREFERENCES_CALENDAR_MODE = "resourcesOnly";
+    final static String PREFERENCES_BACKEND_BASE_URL = "baseUrl";
+    final static String PREFERENCES_BACKEND_SUB_URL = "subUrl";
+    // TODO: add url for enrolling people
 
 
     final SharedPreferences preferences;
@@ -131,4 +134,23 @@ public class PreferenceManager {
         editor.apply();
     }
 
+    public String getBaseUrl() {
+        return preferences.getString(PREFERENCES_BACKEND_BASE_URL, "http://api.wackymemes.com/api/v1/");
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(PREFERENCES_BACKEND_BASE_URL, baseUrl);
+        editor.apply();
+    }
+
+    public String getSubUrl() {
+        return preferences.getString(PREFERENCES_BACKEND_SUB_URL, "users/recognize/");
+    }
+
+    public void setSubUrl(String subUrl) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(PREFERENCES_BACKEND_SUB_URL, subUrl);
+        editor.apply();
+    }
 }

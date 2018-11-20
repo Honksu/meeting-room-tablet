@@ -1,7 +1,10 @@
 package com.futurice.android.reservator.model;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.futurice.android.reservator.common.PreferenceManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,13 +21,16 @@ import static org.opencv.android.CameraRenderer.LOGTAG;
 public class NaamatauluAPI extends AsyncTask<File, Void, String> {
 
     public UploadListener delegate = null;
+    private Context context;
     private String recognizedName = "";
 
-    static final String baseUrl = "http://api.wackymemes.com/api/v1/";
-    static final String subUrl = "users/recognize/";
+//    static final String baseUrl = "http://api.wackymemes.com/api/v1/";
+//    static final String subUrl = "users/recognize/";
     OkHttpClient client = new OkHttpClient();
+    PreferenceManager preferences;
 
-    public NaamatauluAPI(UploadListener response){
+    public NaamatauluAPI(Context context, UploadListener response) {
+        this.context = context;
         delegate = response;
     }
 
@@ -34,12 +40,14 @@ public class NaamatauluAPI extends AsyncTask<File, Void, String> {
 
     @Override
     protected String doInBackground(File... file) {
+        preferences = PreferenceManager.getInstance(context);
+        String url = preferences.getBaseUrl() + preferences.getSubUrl();
         RequestBody formBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("faces", file[0].getName(),
                         RequestBody.create(MediaType.parse("image/png"), file[0]))
                 .build();
-        Request request = new Request.Builder().url(baseUrl + subUrl).post(formBody).addHeader("Accept", "application/json; q=0.5").build();
+        Request request = new Request.Builder().url(url).post(formBody).addHeader("Accept", "application/json; q=0.5").build();
         Response response = null;
         try {
             response = this.client.newCall(request).execute();
