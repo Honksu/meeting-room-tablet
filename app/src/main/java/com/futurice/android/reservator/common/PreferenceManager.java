@@ -134,6 +134,7 @@ public class PreferenceManager {
         editor.apply();
     }
 
+    // TODO: remove the hardcoded URLs
     public String getBaseUrl() {
         return preferences.getString(PREFERENCES_BACKEND_BASE_URL, "http://api.wackymemes.com/api/v1/");
     }

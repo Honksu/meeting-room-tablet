@@ -63,7 +63,8 @@
             android:name=".PersonalActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.AppCompat" />
-        <activity android:name=".LandingActivity"
+        <activity
+            android:name=".LandingActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.AppCompat" />
         <activity
@@ -85,6 +86,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
     </application>
 
 </manifest>
