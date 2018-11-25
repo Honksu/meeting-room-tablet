@@ -33,8 +33,7 @@ public class PreferenceManager {
     final static String PREFERENCES_CONFIGURED = "preferencedConfigured";
     final static String PREFERENCES_CALENDAR_MODE = "resourcesOnly";
     final static String PREFERENCES_BACKEND_BASE_URL = "baseUrl";
-    final static String PREFERENCES_BACKEND_SUB_URL = "subUrl";
-    // TODO: add url for enrolling people
+    final static String PREFERENCES_BACKEND_AUTH_TOKEN = "authToken";
 
 
     final SharedPreferences preferences;
@@ -145,13 +144,13 @@ public class PreferenceManager {
         editor.apply();
     }
 
-    public String getSubUrl() {
-        return preferences.getString(PREFERENCES_BACKEND_SUB_URL, "users/recognize/");
+    public String getToken() {
+        return preferences.getString(PREFERENCES_BACKEND_AUTH_TOKEN, null);
     }
 
-    public void setSubUrl(String subUrl) {
+    public void setToken(String token) {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(PREFERENCES_BACKEND_SUB_URL, subUrl);
+        editor.putString(PREFERENCES_BACKEND_AUTH_TOKEN, token);
         editor.apply();
     }
 }

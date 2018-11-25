@@ -5,7 +5,7 @@
     android:background="@android:color/holo_green_dark">
 
     <LinearLayout
-        android:layout_width="400dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:padding="40dp"
@@ -30,7 +30,7 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/wizard_backend_sub_url_title"
+            android:id="@+id/wizard_backend_token_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -38,29 +38,14 @@
             android:textSize="24sp" />
 
         <EditText
-            android:id="@+id/wizard_backend_sub_url"
+            android:id="@+id/wizard_backend_token"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingBottom="15dp"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:hint="6216353E35E692BE1DB5846DDFD65"/>
 
     </LinearLayout>
 
 </RelativeLayout>
-
-
-<!--
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.futurice.android.reservator.view.wizard.WizardBackendUrlInput">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
-</FrameLayout>
--->

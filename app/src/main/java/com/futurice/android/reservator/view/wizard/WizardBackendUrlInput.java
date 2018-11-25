@@ -29,10 +29,10 @@ public final class WizardBackendUrlInput
     TextView baseUrlTitle;
     @BindView(R.id.wizard_backend_base_url)
     EditText baseUrlInput;
-    @BindView(R.id.wizard_backend_sub_url_title)
-    TextView subUrlTitle;
-    @BindView(R.id.wizard_backend_sub_url)
-    EditText subUrlInput;
+    @BindView(R.id.wizard_backend_token_title)
+    TextView tokenTitle;
+    @BindView(R.id.wizard_backend_token)
+    EditText tokenInput;
 
     Unbinder unbinder;
 
@@ -48,12 +48,12 @@ public final class WizardBackendUrlInput
         unbinder = ButterKnife.bind(this, view);
 
         baseUrlTitle.setText("Input base URL");
-        subUrlTitle.setText("Input sub URL");
+        tokenTitle.setText("Input authentication token");
 
         preferences = PreferenceManager.getInstance(getActivity());
         baseUrlInput.setText((CharSequence) preferences.getBaseUrl(), TextView.BufferType.EDITABLE);
         String baseUrl = preferences.getBaseUrl();
-        subUrlInput.setText(preferences.getSubUrl(), TextView.BufferType.EDITABLE);
+        tokenInput.setText(preferences.getToken(), TextView.BufferType.EDITABLE);
 
         baseUrlInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -69,14 +69,14 @@ public final class WizardBackendUrlInput
             public void afterTextChanged(Editable editable) {
             }
         });
-        subUrlInput.addTextChangedListener(new TextWatcher() {
+        tokenInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence c, int i, int i1, int i2) {
             }
 
             @Override
             public void onTextChanged(CharSequence c, int i, int i1, int i2) {
-                preferences.setSubUrl(c.toString());
+                preferences.setToken(c.toString());
             }
 
             @Override
