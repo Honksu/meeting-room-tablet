@@ -61,12 +61,13 @@
             android:theme="@style/Theme.AppCompat" />
         <activity
             android:name=".PersonalActivity"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/Theme.AppCompat" />
+            android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".LandingActivity"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/Theme.AppCompat" />
+            android:screenOrientation="sensorLandscape" />
+        <activity android:name=".EnrollActivity"
+            android:screenOrientation="sensorLandscape" />
+
         <activity
             android:name=".CheckPermissionsActivity"
             android:theme="@style/Theme.AppCompat">

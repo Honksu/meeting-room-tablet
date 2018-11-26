@@ -122,9 +122,11 @@ public class FaceDetector {
         if (largestFace != null) {
             Mat cropped = new Mat(img, largestFace);
 
-            Imgcodecs.imwrite(context.getFilesDir().getPath() + "/" + "croppedFace.png", cropped);
+            String outputPath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
+
+            Imgcodecs.imwrite(outputPath + "/" + "croppedFace.png", cropped);
             Imgcodecs.imwrite(path, img); // Rewrite the image to show in the screen with the one that has rectacles on the faces
-            return new File(context.getFilesDir().getPath() + "/" + "croppedFace.png");
+            return new File(outputPath + "/" + "croppedFace.png");
         }
 
         Log.d(LOGTAG, "Sendind photo");
