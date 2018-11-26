@@ -32,7 +32,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
     </LinearLayout>
-    <!--
+
     <com.futurice.android.reservator.view.DayView
         android:id="@+id/dayView"
         android:layout_width="wrap_content"
@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </com.futurice.android.reservator.view.DayView>
-    -->
+
 
     <Button
         android:id="@+id/notMeButton"

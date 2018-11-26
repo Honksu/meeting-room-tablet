@@ -65,9 +65,9 @@
         <activity
             android:name=".LandingActivity"
             android:screenOrientation="sensorLandscape" />
-        <activity android:name=".EnrollActivity"
+        <activity
+            android:name=".EnrollActivity"
             android:screenOrientation="sensorLandscape" />
-
         <activity
             android:name=".CheckPermissionsActivity"
             android:theme="@style/Theme.AppCompat">
@@ -88,6 +88,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <activity android:name=".CameraActivity"></activity>
     </application>
 
 </manifest>

@@ -29,6 +29,12 @@
             android:layout_height="wrap_content"
             android:text="Recognize me!" />
 
+        <Button
+            android:id="@+id/enrollButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enroll user" />
+
         <TextClock
             android:id="@+id/digitalClock1"
             style="@style/DigitalClockStyle"
