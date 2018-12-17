@@ -1,5 +1,7 @@
 package com.futurice.android.reservator.common;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +10,7 @@ import java.io.IOException;
 
 public class CurrentUser {
     private static CurrentUser sharedInstance = null;
+    private static final String TAG = CurrentUser.class.getSimpleName();
 
     public static CurrentUser getInstance() {
         if (sharedInstance == null) {
@@ -23,7 +26,7 @@ public class CurrentUser {
     public void processJson(String json) {
         ObjectMapper mapper = new ObjectMapper();
 
-        User[] users = new User[0];
+        User[] users = new User[4];
         try {
             users = mapper.readValue(json, User[].class);
         } catch (IOException e) {
@@ -38,6 +41,14 @@ public class CurrentUser {
         }*/
 
         user = users[0];
+    }
+
+    public void clearUser() {
+        user.id = 0;
+        user.username = null;
+        user.firstName = null;
+        user.lastName = null;
+        Log.d(TAG, "user cleared");
     }
 
     public String getUsername() {

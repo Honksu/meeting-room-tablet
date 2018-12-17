@@ -30,6 +30,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     private final AtomicBoolean recognizing = new AtomicBoolean(false);
     private FaceDetector faceDetector;
 
+    private Runnable clearUser = new Runnable() {
+        @Override
+        public void run() {
+            CurrentUser.getInstance().clearUser();
+        }
+    };
+
     private Camera.FaceDetectionListener fdListener = new Camera.FaceDetectionListener() {
         @Override
         public void onFaceDetection(Camera.Face[] faces, Camera camera) {
@@ -41,6 +48,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
             }
             if (faces.length == 0) {
                 Log.d(TAG, "No faces");
+                getHandler().postDelayed(clearUser, 3000);
+                recognizing.set(false);
                 // TODO: to be used when user leaves the device and will be logged out
             }
         }
@@ -48,7 +57,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
     private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
         @Override
-        public void onPictureTaken(final byte[] data, Camera camera) {
+        public void onPictureTaken(final byte[] data, final Camera camera) {
             Log.d(TAG, "onPictureTaken");
             getHandler().post(new Runnable() {
                 @Override
@@ -59,6 +68,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                         Log.e(TAG, "Cannot get image");
                         return;
                     }
+                    camera.startPreview();
+                    camera.startFaceDetection();
                     sendCropped(cropped);
                 }
             });
