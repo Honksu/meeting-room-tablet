@@ -31,6 +31,7 @@ import com.futurice.android.reservator.model.Reservation;
 import com.futurice.android.reservator.model.ReservatorException;
 import com.futurice.android.reservator.model.Room;
 import com.futurice.android.reservator.model.TimeSpan;
+import com.futurice.android.reservator.view.CameraView;
 import com.futurice.android.reservator.view.EditReservationPopup;
 import com.futurice.android.reservator.view.LobbyReservationRowView;
 import com.futurice.android.reservator.view.RoomReservationPopup;
@@ -72,6 +73,8 @@ public class RoomActivity extends ReservatorActivity implements OnMenuItemClickL
     RoomTrafficLights trafficLights;
     @BindView(R.id.seeAllRoomsButton)
     Button seeAllRoomsButton;
+    @BindView(R.id.cameraRoom)
+    CameraView cameraView;
 
     /**
      * Helper for starting a RoomActivity
@@ -103,6 +106,7 @@ public class RoomActivity extends ReservatorActivity implements OnMenuItemClickL
         startAutoRefreshData();
         super.onResume();
         trafficLights.enable();
+        cameraView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -116,6 +120,7 @@ public class RoomActivity extends ReservatorActivity implements OnMenuItemClickL
         }
         showLoadingCount = 0;
         trafficLights.disable();
+        cameraView.setVisibility(View.INVISIBLE);
     }
 
     private void setRoom(Room r) {

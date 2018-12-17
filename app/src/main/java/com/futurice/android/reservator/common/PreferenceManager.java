@@ -135,7 +135,7 @@ public class PreferenceManager {
 
     // TODO: remove the hardcoded URLs
     public String getBaseUrl() {
-        return preferences.getString(PREFERENCES_BACKEND_BASE_URL, "http://api.wackymemes.com/api/v1/");
+        return preferences.getString(PREFERENCES_BACKEND_BASE_URL, "http://naamataulu-backend.herokuapp.com/api/v1/");
     }
 
     public void setBaseUrl(String baseUrl) {

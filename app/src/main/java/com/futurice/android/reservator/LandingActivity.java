@@ -10,11 +10,15 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.futurice.android.reservator.common.CurrentUser;
 import com.futurice.android.reservator.model.DateTime;
 import com.futurice.android.reservator.model.TimeSpan;
+import com.futurice.android.reservator.view.CameraView;
 import com.futurice.android.reservator.view.PersonalReservationRowView;
 
 import java.util.Calendar;
@@ -25,6 +29,7 @@ import butterknife.ButterKnife;
 public class LandingActivity extends Activity {
     // TODO: remove hardcoded stuff, implement getting user's account via facial recognition
     private static final String account = "antti@wackymemes.com";
+    private String user;
 
     public static final int DAY_START_TIME = 60 * 8; // minutes from midnight
     public static final int DAY_END_TIME = 60 * 20;
@@ -32,21 +37,46 @@ public class LandingActivity extends Activity {
     // TODO: implement a proper calendar view for user's meetings
     @BindView(R.id.eventContainer)
     LinearLayout container;
+    @BindView(R.id.freeRoomsButton)
+    Button freeRoomsButton;
+    @BindView(R.id.cameraLanding)
+    CameraView cameraView;
+
+    View.OnClickListener freeRoomsOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            final Intent i = new Intent(LandingActivity.this, FreeRoomsActivity.class);
+            startActivity(i);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
         ButterKnife.bind(this);
-
-        Intent i = getIntent();
+        freeRoomsButton.setOnClickListener(freeRoomsOnClickListener);
+        /*
+        Intent i = getIntent();*/
+        user = CurrentUser.getInstance().getUsername();
         TextView helloTextView = (TextView) findViewById(R.id.helloTextView);
-        helloTextView.setText("Hello, " + i.getStringExtra("username"));
+        helloTextView.setText("Hello, " + user);
 
         String calendarId = getCalendarId(account);
         setReservations(calendarId);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cameraView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        cameraView.setVisibility(View.INVISIBLE);
+    }
 
     private String getCalendarId(String name) {
         String mProjection[] = {CalendarContract.Calendars._ID};

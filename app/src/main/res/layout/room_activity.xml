@@ -9,6 +9,11 @@
         android:background="#fff"
         android:padding="10dip">
 
+        <com.futurice.android.reservator.view.CameraView
+            android:id="@+id/cameraRoom"
+            android:layout_width="1dp"
+            android:layout_height="1dp" />
+
         <com.futurice.android.reservator.view.WeekView
             android:id="@+id/weekView1"
             android:layout_width="match_parent"

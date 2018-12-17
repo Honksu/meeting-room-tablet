@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     android:background="#fff">
 
+    <com.futurice.android.reservator.view.CameraView
+        android:id="@+id/cameraLanding"
+        android:layout_width="1dp"
+        android:layout_height="1dp" />
+
     <TextView
         android:id="@+id/helloTextView"
         android:layout_width="0dp"

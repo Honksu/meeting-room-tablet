@@ -35,6 +35,12 @@
             android:layout_height="wrap_content"
             android:text="Enroll user" />
 
+        <Button
+            android:id="@+id/calendarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calendar" />
+
         <TextClock
             android:id="@+id/digitalClock1"
             style="@style/DigitalClockStyle"
@@ -42,6 +48,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="16dp" />
+
+        <com.futurice.android.reservator.view.CameraView
+            android:id="@+id/cameraLobby"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
 
 </LinearLayout>

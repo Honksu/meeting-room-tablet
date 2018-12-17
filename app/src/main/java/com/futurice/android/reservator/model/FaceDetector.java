@@ -96,7 +96,7 @@ public class FaceDetector {
 
             CascadeClassifier cascadeClassifier = new CascadeClassifier(classifierFile.getPath());
             if (cascadeClassifier != null) {
-                cascadeClassifier.detectMultiScale(img, faces, 1.1, 5, 2,
+                cascadeClassifier.detectMultiScale(img, faces, 1.2, 5, 2,
                         new Size(50, 50), new Size());
             } else {
                 Log.e(LOGTAG, "Reading classifier file from " + classifierFile.getPath() + " failed");

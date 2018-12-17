@@ -30,6 +30,7 @@ import com.futurice.android.reservator.model.DataProxy;
 import com.futurice.android.reservator.model.DataUpdatedListener;
 import com.futurice.android.reservator.model.ReservatorException;
 import com.futurice.android.reservator.model.Room;
+import com.futurice.android.reservator.view.CameraView;
 import com.futurice.android.reservator.view.LobbyReservationRowView;
 import com.futurice.android.reservator.view.LobbyReservationRowView
         .OnReserveListener;
@@ -64,6 +65,10 @@ public class LobbyActivity extends ReservatorActivity
     Button recognizeButton;
     @BindView(R.id.enrollButton)
     Button enrollButton;
+    @BindView(R.id.calendarButton)
+    Button calendarButton;
+    @BindView((R.id.cameraLobby))
+    CameraView cameraView;
 
     View.OnClickListener recognizeOnClickListerner = new View.OnClickListener() {
         @Override
@@ -81,6 +86,14 @@ public class LobbyActivity extends ReservatorActivity
         }
     };
 
+    View.OnClickListener calendarOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            final Intent i = new Intent(LobbyActivity.this, LandingActivity.class);
+            startActivity(i);
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,8 +102,9 @@ public class LobbyActivity extends ReservatorActivity
         ab = getResApplication().getAddressBook();
         clock.setTypeface(
                 Typeface.createFromAsset(getAssets(), "fonts/EHSMB.TTF"));
-        recognizeButton.setOnClickListener(recognizeOnClickListerner);
+        //recognizeButton.setOnClickListener(recognizeOnClickListerner);
         enrollButton.setOnClickListener(enrollOnClickListener);
+        calendarButton.setOnClickListener(calendarOnClickListener);
     }
 
     @Override
@@ -109,6 +123,7 @@ public class LobbyActivity extends ReservatorActivity
             ab.addDataUpdatedListener(this);
         }
         refreshRoomInfo();
+        cameraView.setVisibility(View.VISIBLE);
     }
 
     public String[] getAvailableAccounts() {
@@ -139,6 +154,7 @@ public class LobbyActivity extends ReservatorActivity
             showLoadingCount = 0;
             progressDialog = null;
         }
+        cameraView.setVisibility(View.INVISIBLE);
     }
 
     @Override
