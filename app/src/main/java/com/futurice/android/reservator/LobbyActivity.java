@@ -159,9 +159,10 @@ public class LobbyActivity extends ReservatorActivity
 
     @Override
     protected Boolean isPrehensible() {
-        String favouriteRoomName =
+        return false;
+/*        String favouriteRoomName =
                 PreferenceManager.getInstance(this).getSelectedRoom();
-        return favouriteRoomName != null;
+        return favouriteRoomName != null;*/
     }
 
     private void refreshRoomInfo() {
