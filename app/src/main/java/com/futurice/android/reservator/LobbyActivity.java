@@ -160,6 +160,8 @@ public class LobbyActivity extends ReservatorActivity
     @Override
     protected Boolean isPrehensible() {
         return false;
+        // TODO: this is changed only for sprint review purposes
+        // change back to old implementation after review
 /*        String favouriteRoomName =
                 PreferenceManager.getInstance(this).getSelectedRoom();
         return favouriteRoomName != null;*/
