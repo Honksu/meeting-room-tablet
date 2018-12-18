@@ -50,7 +50,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                 Log.d(TAG, "No faces");
                 getHandler().postDelayed(clearUser, 3000);
                 recognizing.set(false);
-                // TODO: to be used when user leaves the device and will be logged out
             }
         }
     };
@@ -110,6 +109,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         if (camera != null) {
             camera.release();
+            camera = null;
         }
     }
 
