@@ -49,6 +49,8 @@ public class SettingsActivity extends ReservatorActivity {
     Button removeUserDataButton;
     @BindView(R.id.defaultReservationAccountLabel)
     TextView defaultReservationAccountLabel;
+    @BindView(R.id.InputAPIKey)
+    TextView InputAPIKey;
     // TODO: add "change backend urls"-feature
 
     @Override
@@ -114,6 +116,7 @@ public class SettingsActivity extends ReservatorActivity {
             selectedResAccount = selectedResAccountName.toString().trim();
         }
 
+        String APIKey = InputAPIKey.getText().toString();
 
         preferences.setDefaultCalendarAccount(selectedAccount);
         preferences.setSelectedRoom(roomName);
@@ -121,6 +124,7 @@ public class SettingsActivity extends ReservatorActivity {
         preferences.setDefaultUserName(selectedResAccount);
         preferences.setUnselectedRooms(unselectedRooms);
         preferences.setCalendarMode(m);
+        preferences.setToken(APIKey);
 
 
         // Update proxies
@@ -140,6 +144,7 @@ public class SettingsActivity extends ReservatorActivity {
         refreshRoomSelectionNamesList();
         refreshAddressBookToggle();
         refreshResourceCalendarToggle();
+        refreshAPIKey();
     }
 
 
@@ -293,6 +298,13 @@ public class SettingsActivity extends ReservatorActivity {
             cb.setChecked(!unselectedRooms.contains(roomName));
             roomsListLinearLayout.addView(cb);
         }
+
+    }
+
+    public void refreshAPIKey() {
+
+        String APIString = preferences.getToken();
+        InputAPIKey.setText(APIString);
 
     }
 

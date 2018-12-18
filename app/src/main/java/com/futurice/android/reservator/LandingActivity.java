@@ -42,20 +42,20 @@ public class LandingActivity extends Activity {
     @BindView(R.id.cameraLanding)
     CameraView cameraView;
 
-    View.OnClickListener freeRoomsOnClickListener = new View.OnClickListener() {
+    /*View.OnClickListener freeRoomsOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             final Intent i = new Intent(LandingActivity.this, FreeRoomsActivity.class);
             startActivity(i);
         }
-    };
+    };*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
         ButterKnife.bind(this);
-        freeRoomsButton.setOnClickListener(freeRoomsOnClickListener);
+        //freeRoomsButton.setOnClickListener(freeRoomsOnClickListener);
         /*
         Intent i = getIntent();*/
         user = CurrentUser.getInstance().getUsername();
