@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = CameraView.class.getSimpleName();
     private SurfaceHolder holder;
@@ -34,6 +35,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         @Override
         public void run() {
             CurrentUser.getInstance().clearUser();
+            Toast.makeText(context, "User logged out", Toast.LENGTH_LONG).show();
         }
     };
 
@@ -63,12 +65,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                 public void run() {
                     File photo = pictureTaken(data);
                     File cropped = faceDetector.cropLargestFace(photo.getAbsolutePath());
-                    if (cropped == null) {
-                        Log.e(TAG, "Cannot get image");
-                        return;
-                    }
                     camera.startPreview();
                     camera.startFaceDetection();
+                    if (cropped == null) {
+                        Log.e(TAG, "Cannot get image");
+                        recognizing.set(false);
+                        return;
+                    }
                     sendCropped(cropped);
                 }
             });
@@ -156,6 +159,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                 if (result == null) {
                     Log.d(TAG, "Not identified");
                     Toast.makeText(context, "Not identified", Toast.LENGTH_LONG).show();
+                    recognizing.set(false);
                     return;
                 }
                 CurrentUser.getInstance().processJson(result);
