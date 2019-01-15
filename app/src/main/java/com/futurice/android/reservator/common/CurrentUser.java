@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CurrentUser {
     private static CurrentUser sharedInstance = null;
@@ -20,27 +23,25 @@ public class CurrentUser {
     }
 
     private static User user = new User();
+    private static List<User> users = new ArrayList<User>();
 
     private CurrentUser() {}
 
     public void processJson(String json) {
         ObjectMapper mapper = new ObjectMapper();
 
-        User[] users = new User[4];
+        User[] usersArray = new User[4];
         try {
-            users = mapper.readValue(json, User[].class);
+            usersArray = mapper.readValue(json, User[].class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*
-        List<User> users = new ArrayList<>();
-        try {
-            users = mapper.readValue(result, new TypeReference<List<User>>(){});
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        users = new ArrayList<User>(Arrays.asList(usersArray));
+    }
 
-        user = users[0];
+    public void setLoggedIn() {
+        user = users.get(0);
+        users.remove(0);
     }
 
     public void clearUser() {
@@ -48,6 +49,7 @@ public class CurrentUser {
         user.username = null;
         user.firstName = null;
         user.lastName = null;
+        users.clear();
         Log.d(TAG, "user cleared");
     }
 

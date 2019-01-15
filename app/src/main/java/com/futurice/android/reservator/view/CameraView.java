@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
@@ -27,14 +26,22 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder holder;
     private Camera camera;
     private Context context;
-
-    private final AtomicBoolean recognizing = new AtomicBoolean(false);
     private FaceDetector faceDetector;
+
+    public enum State {
+        NO_USER,
+        RECOGNIZING,
+        USING,
+        LOGOUT
+    }
+
+    State state = State.NO_USER;
 
     private Runnable clearUser = new Runnable() {
         @Override
         public void run() {
             CurrentUser.getInstance().clearUser();
+            state = State.NO_USER;
             Toast.makeText(context, "User logged out", Toast.LENGTH_LONG).show();
         }
     };
@@ -44,14 +51,52 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         public void onFaceDetection(Camera.Face[] faces, Camera camera) {
             if (faces.length > 0) {
                 Log.d(TAG, faces.length + " face(s)");
-                if (!recognizing.getAndSet(true)) {
-                    camera.takePicture(null, null, null, pictureCallback);
+                switch (state) {
+                    case NO_USER:
+                        state = State.RECOGNIZING;
+                        camera.takePicture(null, null, null, pictureCallback);
+                        Toast.makeText(context, "Recognizing...", Toast.LENGTH_SHORT).show();
+                        break;
+                    case RECOGNIZING:
+                        for (Camera.Face face : faces) {
+                            Log.d(TAG, String.valueOf(face.rect.height()));
+                            if (face.rect.height() > 400) {
+                                CurrentUser.getInstance().setLoggedIn();
+                                state = State.USING;
+                                Toast.makeText(context, "Hello, " + CurrentUser.getInstance().getUsername(), Toast.LENGTH_LONG).show();
+                                break;
+                            }
+                        }
+                        break;
+                    case USING:
+                        for (Camera.Face face : faces) {
+                            if (face.rect.height() > 400) {
+                                break;
+                            }
+                            state = State.LOGOUT;
+                            Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
+                            getHandler().postDelayed(clearUser, 3000);
+                        }
+                        break;
+                    case LOGOUT:
+                        getHandler().removeCallbacks(clearUser);
+                        Toast.makeText(context, "Back again", Toast.LENGTH_SHORT).show();
+                        state = State.USING;
                 }
             }
             if (faces.length == 0) {
                 Log.d(TAG, "No faces");
-                getHandler().postDelayed(clearUser, 3000);
-                recognizing.set(false);
+                switch (state) {
+                    // TODO: pohdipa missä vaiheessa tyhjätä käyttäjä, tuleeko tää liian aikaisin?
+                    case RECOGNIZING:
+                        getHandler().post(clearUser);
+                        break;
+                    case USING:
+                        state = State.LOGOUT;
+                        Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
+                        getHandler().postDelayed(clearUser, 3000);
+                        break;
+                }
             }
         }
     };
@@ -65,11 +110,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                 public void run() {
                     File photo = pictureTaken(data);
                     File cropped = faceDetector.cropLargestFace(photo.getAbsolutePath());
-                    camera.startPreview();
-                    camera.startFaceDetection();
                     if (cropped == null) {
                         Log.e(TAG, "Cannot get image");
-                        recognizing.set(false);
+                        state = State.NO_USER;
                         return;
                     }
                     sendCropped(cropped);
@@ -83,6 +126,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
     public CameraView(Context context, AttributeSet attrs) { this(context, attrs, 0); }
 
+    // TODO: luodaan uusi cameraview activityn vaihtuessa -> täytyy tarkistaa currentuserilta onko joku aktiivisena
     public CameraView(Context context, AttributeSet attrs, int defStyleattr) {
         super(context, attrs, defStyleattr);
         holder = getHolder();
@@ -139,6 +183,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
             os.write(data);
             os.close();
         } catch (IOException e) {
+            state = State.NO_USER;
             Log.e(TAG, "Cannot write to " + e);
         } finally {
             if (os != null) {
@@ -149,6 +194,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
         }
+        camera.startPreview();
         return photo;
     }
 
@@ -159,13 +205,12 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                 if (result == null) {
                     Log.d(TAG, "Not identified");
                     Toast.makeText(context, "Not identified", Toast.LENGTH_LONG).show();
-                    recognizing.set(false);
+                    state = State.NO_USER;
                     return;
                 }
                 CurrentUser.getInstance().processJson(result);
-                String username = CurrentUser.getInstance().getUsername();
-
-                Toast.makeText(context, "Hello, " + username, Toast.LENGTH_LONG).show();
+                camera.startFaceDetection();
+                Toast.makeText(context, "Recognized", Toast.LENGTH_SHORT).show();
             }
         }).execute(cropped);
     }
