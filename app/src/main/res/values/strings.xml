@@ -50,6 +50,8 @@
     <string name="free_for_the_day">for the day</string>
     <string name="free_for_specific_amount">for %1$s</string>
     <string name="status_reserved">Reserved</string>
+    <string name="URL_Text">Base URL</string>
+    <string name="InputBaseURL">Input your base URL here</string>
     <string name="API_Text">API Key</string>
     <string name="InputAPIKey">Input your API key here</string>
 </resources>

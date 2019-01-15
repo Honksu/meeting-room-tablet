@@ -52,7 +52,6 @@ public final class WizardBackendUrlInput
 
         preferences = PreferenceManager.getInstance(getActivity());
         baseUrlInput.setText((CharSequence) preferences.getBaseUrl(), TextView.BufferType.EDITABLE);
-        String baseUrl = preferences.getBaseUrl();
         tokenInput.setText(preferences.getToken(), TextView.BufferType.EDITABLE);
 
         baseUrlInput.addTextChangedListener(new TextWatcher() {

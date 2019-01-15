@@ -1,9 +1,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:background="#fff"
-            android:padding="0dip">
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#fff"
+    android:padding="0dip">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -122,6 +122,27 @@
             android:orientation="vertical"/>
 
         <TextView
+            android:id="@+id/URLtextView"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/URL_Text"
+            android:textColor="#000"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/InputBaseURL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/InputBaseURL"
+            android:inputType="text"
+            android:singleLine="false"
+            android:textColor="#000"
+            android:textSize="18sp" />
+
+
+        <TextView
             android:id="@+id/APItextView"
             android:layout_width="match_parent"
             android:layout_height="45dp"
@@ -132,7 +153,7 @@
 
         <EditText
             android:id="@+id/InputAPIKey"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/InputAPIKey"

@@ -49,9 +49,10 @@ public class SettingsActivity extends ReservatorActivity {
     Button removeUserDataButton;
     @BindView(R.id.defaultReservationAccountLabel)
     TextView defaultReservationAccountLabel;
+    @BindView(R.id.InputBaseURL)
+    TextView InputBaseURL;
     @BindView(R.id.InputAPIKey)
     TextView InputAPIKey;
-    // TODO: add "change backend urls"-feature
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -116,6 +117,7 @@ public class SettingsActivity extends ReservatorActivity {
             selectedResAccount = selectedResAccountName.toString().trim();
         }
 
+        String baseURL = InputBaseURL.getText().toString();
         String APIKey = InputAPIKey.getText().toString();
 
         preferences.setDefaultCalendarAccount(selectedAccount);
@@ -124,6 +126,7 @@ public class SettingsActivity extends ReservatorActivity {
         preferences.setDefaultUserName(selectedResAccount);
         preferences.setUnselectedRooms(unselectedRooms);
         preferences.setCalendarMode(m);
+        preferences.setBaseUrl(baseURL);
         preferences.setToken(APIKey);
 
 
@@ -144,6 +147,7 @@ public class SettingsActivity extends ReservatorActivity {
         refreshRoomSelectionNamesList();
         refreshAddressBookToggle();
         refreshResourceCalendarToggle();
+        refreshBaseURL();
         refreshAPIKey();
     }
 
@@ -299,6 +303,11 @@ public class SettingsActivity extends ReservatorActivity {
             roomsListLinearLayout.addView(cb);
         }
 
+    }
+
+    public void refreshBaseURL() {
+        String baseURL = preferences.getBaseUrl();
+        InputBaseURL.setText(baseURL);
     }
 
     public void refreshAPIKey() {
