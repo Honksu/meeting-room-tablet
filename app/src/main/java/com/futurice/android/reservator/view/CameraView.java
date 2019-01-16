@@ -208,9 +208,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                     state = State.NO_USER;
                     return;
                 }
-                CurrentUser.getInstance().processJson(result);
+                if (CurrentUser.getInstance().processJson(result)) {
+                    Toast.makeText(context, "Recognized", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Didn't recognize you", Toast.LENGTH_SHORT).show();
+                    state = State.NO_USER;
+                }
                 camera.startFaceDetection();
-                Toast.makeText(context, "Recognized", Toast.LENGTH_SHORT).show();
             }
         }).execute(cropped);
     }

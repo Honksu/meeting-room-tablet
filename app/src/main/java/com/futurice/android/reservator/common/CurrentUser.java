@@ -27,7 +27,7 @@ public class CurrentUser {
 
     private CurrentUser() {}
 
-    public void processJson(String json) {
+    public boolean processJson(String json) {
         ObjectMapper mapper = new ObjectMapper();
 
         User[] usersArray = new User[4];
@@ -37,6 +37,7 @@ public class CurrentUser {
             e.printStackTrace();
         }
         users = new ArrayList<User>(Arrays.asList(usersArray));
+        return !users.isEmpty();
     }
 
     public void setLoggedIn() {
