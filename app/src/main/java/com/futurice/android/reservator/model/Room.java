@@ -35,7 +35,7 @@ public class Room implements Serializable {
         // Resource account's email ends in @resource.calendar.google.com
         // Account's name consist of resources location and other data
         String[] isResource = email.split("@");
-        if (isResource[1].equals("resource.calendar.google.com")) {
+        if (isResource[isResource.length - 1].equals("resource.calendar.google.com")) {
             String[] properties = name.split("-");
             building = properties[0];
             floor = Integer.valueOf(properties[1]);
@@ -46,7 +46,6 @@ public class Room implements Serializable {
             String[] finalParts = properties[parts - 1].split("\\(");
             shortName = finalParts[0].trim();
             capacity = Integer.valueOf(finalParts[1].replaceAll("[^0-9]", ""));
-            int i = 0;
         }
     }
 
