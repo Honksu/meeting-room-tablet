@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff">
-
+<!--
     <com.futurice.android.reservator.view.CameraView
         android:id="@+id/cameraLanding"
         android:layout_width="1dp"
         android:layout_height="1dp" />
-
+-->
     <TextView
         android:id="@+id/helloTextView"
         android:layout_width="0dp"
@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent" />
-
+<!--
     <LinearLayout
         android:id="@+id/eventContainer"
         android:layout_width="0dp"
@@ -37,7 +37,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
     </LinearLayout>
-
+-->
     <com.futurice.android.reservator.view.DayView
         android:id="@+id/dayView"
         android:layout_width="wrap_content"
