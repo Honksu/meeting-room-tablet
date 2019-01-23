@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Vector;
 
 import com.futurice.android.reservator.common.Helpers;
+import com.futurice.android.reservator.common.PreferenceManager;
+import com.futurice.android.reservator.model.platformcalendar.PlatformCalendarDataProxy;
 
 public class Room implements Serializable {
     // Rooms that are free for no more than this long to future are considered "reserved" (not-bookable)
@@ -16,6 +18,8 @@ public class Room implements Serializable {
     // Rooms that are free for this long to future are considered "free"
     static private final int FREE_THRESHOLD_MINUTES = 180;
     private String name, email;
+    private String building, area, shortName;
+    private int floor;
     private Vector<Reservation> reservations;
 
     //public Vector<Reservation> getReservations(){
@@ -27,6 +31,23 @@ public class Room implements Serializable {
         this.name = name;
         this.email = email;
         this.reservations = new Vector<Reservation>();
+
+        // Resource account's email ends in @resource.calendar.google.com
+        // Account's name consist of resources location and other data
+        String[] isResource = email.split("@");
+        if (isResource[1].equals("resource.calendar.google.com")) {
+            String[] properties = name.split("-");
+            building = properties[0];
+            floor = Integer.valueOf(properties[1]);
+            int parts = properties.length;
+            if (parts == 4) {
+                area = properties[2];
+            }
+            String[] finalParts = properties[parts - 1].split("\\(");
+            shortName = finalParts[0].trim();
+            capacity = Integer.valueOf(finalParts[1].replaceAll("[^0-9]", ""));
+            int i = 0;
+        }
     }
 
     public String getName() {
@@ -36,6 +57,12 @@ public class Room implements Serializable {
     public String getEmail() {
         return email;
     }
+
+    // These are called only in "resources" -mode as "account"-mode rooms don't have location data
+    public String getBuilding() { return building; }
+    public String getArea() { return area; }
+    public String getShortName() { return shortName; }
+    public int getFloor() { return floor; }
 
     public void setReservations(Vector<Reservation> reservations) {
         this.reservations = reservations;
