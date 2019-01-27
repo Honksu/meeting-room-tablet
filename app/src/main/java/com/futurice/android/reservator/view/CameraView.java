@@ -3,6 +3,7 @@ package com.futurice.android.reservator.view;
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
@@ -30,12 +32,14 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
     public enum State {
         NO_USER,
-        RECOGNIZING,
+        RECOGNIZED,
         USING,
         LOGOUT
     }
 
     State state = State.NO_USER;
+    boolean manualStop = false;
+    AtomicBoolean takingphoto = new AtomicBoolean(false);
 
     private Runnable clearUser = new Runnable() {
         @Override
@@ -49,67 +53,67 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     private Camera.FaceDetectionListener fdListener = new Camera.FaceDetectionListener() {
         @Override
         public void onFaceDetection(Camera.Face[] faces, Camera camera) {
-            if (faces.length > 0) {
-                Log.d(TAG, faces.length + " face(s)");
-                boolean closeUser = false;
-                switch (state) {
-                    case NO_USER:
-                        camera.takePicture(null, null, null, pictureCallback);
-                        Log.d(TAG, "after call");
-                        Toast.makeText(context, "Recognizing...", Toast.LENGTH_SHORT).show();
-                        state = State.RECOGNIZING;
-                        break;
-                    case RECOGNIZING:
-                        for (Camera.Face face : faces) {
-                            Log.d(TAG, String.valueOf(face.rect.height()));
-                            if (face.rect.height() > 400) {
-                                CurrentUser.getInstance().setLoggedIn();
+            if (!takingphoto.get()) {
+                if (faces.length > 0) {
+                    Log.d(TAG, faces.length + " face(s)");
+                    boolean closeUser = false;
+                    switch (state) {
+                        case NO_USER:
+                            takingphoto.set(true);
+                            camera.takePicture(null, null, null, pictureCallback);
+                            if (manualStop) {
+                                camera.stopFaceDetection();
+                            }
+                            Toast.makeText(context, "Recognizing...", Toast.LENGTH_SHORT).show();
+                            break;
+                        case RECOGNIZED:
+                            for (Camera.Face face : faces) {
+                                if (face.rect.height() > 400) {
+                                    CurrentUser.getInstance().setLoggedIn();
+                                    state = State.USING;
+                                    Toast.makeText(context, "Hello, " + CurrentUser.getInstance().getUsername(), Toast.LENGTH_LONG).show();
+                                    break;
+                                }
+                            }
+                            break;
+                        case USING:
+                            for (Camera.Face face : faces) {
+                                if (face.rect.height() > 400) {
+                                    closeUser = true;
+                                }
+                            }
+                            if (!closeUser) {
+                                state = State.LOGOUT;
+                                Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
+                                getHandler().postDelayed(clearUser, 5000);
+                            }
+                            break;
+                        case LOGOUT:
+                            for (Camera.Face face : faces) {
+                                if (face.rect.height() > 400) {
+                                    closeUser = true;
+                                }
+                            }
+                            if (closeUser) {
+                                getHandler().removeCallbacks(clearUser);
+                                Toast.makeText(context, "Back again", Toast.LENGTH_SHORT).show();
                                 state = State.USING;
-                                Toast.makeText(context, "Hello, " + CurrentUser.getInstance().getUsername(), Toast.LENGTH_LONG).show();
-                                break;
                             }
-                        }
-                        break;
-                    case USING:
-                        // TODO: logiikka kusee, nythän juurikin loggaudutaan ulos, jos on myös pienemmät kasvot näkyvissä
-                        // -> ympäröi ehkä booleanilla, johon merkitään, löytyykö myös tarpeeksi lähellä olevia kasvoja
-                        for (Camera.Face face : faces) {
-                            if (face.rect.height() > 400) {
-                                closeUser = true;
-                            }
-                        }
-                        if (!closeUser) {
+                    }
+                }
+                if (faces.length == 0) {
+                    Log.d(TAG, "No faces");
+                    switch (state) {
+                        // TODO: pohdipa missä vaiheessa tyhjätä käyttäjä, tuleeko tää liian aikaisin?
+                        case RECOGNIZED:
+                            getHandler().post(clearUser);
+                            break;
+                        case USING:
                             state = State.LOGOUT;
                             Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
                             getHandler().postDelayed(clearUser, 5000);
-                        }
-                        break;
-                    case LOGOUT:
-                        boolean logout = false;
-                        for (Camera.Face face : faces) {
-                            if (face.rect.height() > 400) {
-                                closeUser = true;
-                            }
-                        }
-                        if (closeUser) {
-                            getHandler().removeCallbacks(clearUser);
-                            Toast.makeText(context, "Back again", Toast.LENGTH_SHORT).show();
-                            state = State.USING;
-                        }
-                }
-            }
-            if (faces.length == 0) {
-                Log.d(TAG, "No faces");
-                switch (state) {
-                    // TODO: pohdipa missä vaiheessa tyhjätä käyttäjä, tuleeko tää liian aikaisin?
-                    case RECOGNIZING:
-                        getHandler().post(clearUser);
-                        break;
-                    case USING:
-                        state = State.LOGOUT;
-                        Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
-                        getHandler().postDelayed(clearUser, 3000);
-                        break;
+                            break;
+                    }
                 }
             }
         }
@@ -118,13 +122,11 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(final byte[] data, final Camera camera) {
-            Log.d(TAG, "onPictureTaken");
             getHandler().post(new Runnable() {
                 @Override
                 public void run() {
                     File photo = pictureTaken(data);
                     File cropped = faceDetector.cropLargestFace(photo.getAbsolutePath());
-                    Log.d(TAG, "after cropped");
                     if (cropped == null) {
                         Log.e(TAG, "Cannot get image");
                         state = State.NO_USER;
@@ -148,6 +150,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         holder.addCallback(this);
         this.context = context;
         faceDetector = new FaceDetector(context, (Activity)context);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            manualStop = true;
+        }
     }
 
     @Override
@@ -209,7 +214,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
         }
+        //if (!manualStop) {
         camera.startPreview();
+        //}
         return photo;
     }
 
@@ -218,7 +225,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
             @Override
             public void onUploadCompleted(String result) {
                 if (result == null) {
-                    Log.d(TAG, "Not identified");
                     Toast.makeText(context, "Not identified", Toast.LENGTH_LONG).show();
                     state = State.NO_USER;
                     camera.startFaceDetection();
@@ -226,11 +232,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                 }
                 if (CurrentUser.getInstance().processJson(result)) {
                     Toast.makeText(context, "Recognized", Toast.LENGTH_SHORT).show();
+                    state = State.RECOGNIZED;
                 } else {
                     Toast.makeText(context, "Didn't recognize you", Toast.LENGTH_SHORT).show();
                     state = State.NO_USER;
                 }
                 camera.startFaceDetection();
+                takingphoto.set(false);
             }
         }).execute(cropped);
     }
