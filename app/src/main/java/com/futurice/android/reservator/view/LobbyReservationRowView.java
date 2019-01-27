@@ -183,6 +183,10 @@ public class LobbyReservationRowView extends FrameLayout implements
         }
     }
 
+    public void setUser(String username) {
+        nameField.setText(username);
+    }
+
     @Override
     public void onClick(View v) {
 

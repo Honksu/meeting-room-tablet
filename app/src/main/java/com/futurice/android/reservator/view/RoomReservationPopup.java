@@ -1,6 +1,7 @@
 package com.futurice.android.reservator.view;
 
 import com.futurice.android.reservator.R;
+import com.futurice.android.reservator.common.CurrentUser;
 import com.futurice.android.reservator.model.Room;
 import com.futurice.android.reservator.model.TimeSpan;
 import com.futurice.android.reservator.view.LobbyReservationRowView.OnCancellListener;
@@ -55,6 +56,11 @@ public class RoomReservationPopup extends Dialog {
             }
         });
         reservationView.setReserveMode();
+
+        String username = CurrentUser.getInstance().getUsername();
+        if (username != null) {
+            reservationView.setUser(username);
+        }
     }
 
     public void setOnReserveCallback(OnReserveListener onReserveCallback) {
