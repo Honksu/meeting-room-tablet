@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.futurice.android.reservator.view.OtherUsersActivity" >
+
+    <TextView
+        android:id="@+id/UsersTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/OtherUsersTitle"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:layout_marginBottom="25dp"/>
+
+    <Button
+        android:id="@+id/FirstPerson"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginBottom="10dp"
+        android:text="Button" />
+
+    <Button
+        android:id="@+id/SecondPerson"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginBottom="10dp"
+        android:text="Button" />
+
+    <Button
+        android:id="@+id/ThirdPerson"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginBottom="10dp"
+        android:text="Button" />
+
+    <Button
+        android:id="@+id/FourthPerson"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:text="Button" />
+</LinearLayout>

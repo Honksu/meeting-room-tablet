@@ -7,7 +7,6 @@ import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -18,9 +17,7 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DigitalClock;
 import android.widget.LinearLayout;
-import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.futurice.android.reservator.common.PreferenceManager;
@@ -32,8 +29,7 @@ import com.futurice.android.reservator.model.ReservatorException;
 import com.futurice.android.reservator.model.Room;
 import com.futurice.android.reservator.view.CameraView;
 import com.futurice.android.reservator.view.LobbyReservationRowView;
-import com.futurice.android.reservator.view.LobbyReservationRowView
-        .OnReserveListener;
+import com.futurice.android.reservator.view.LobbyReservationRowView.OnReserveListener;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -48,7 +44,7 @@ import butterknife.ButterKnife;
 public class LobbyActivity extends ReservatorActivity
         implements OnMenuItemClickListener,
         DataUpdatedListener, AddressBookUpdatedListener {
-    MenuItem settingsMenu, refreshMenu, aboutMenu;
+    MenuItem settingsMenu, refreshMenu, aboutMenu, OtherUsers;
     DataProxy proxy;
     AddressBook ab;
     int showLoadingCount = 0;
@@ -232,6 +228,7 @@ public class LobbyActivity extends ReservatorActivity
         settingsMenu = menu.add("Settings").setOnMenuItemClickListener(this);
         settingsMenu.setIcon(android.R.drawable.ic_menu_preferences);
         aboutMenu = menu.add("About").setOnMenuItemClickListener(this);
+        OtherUsers = menu.add("This isn't me!").setOnMenuItemClickListener(this);
         return true;
     }
 
@@ -257,6 +254,11 @@ public class LobbyActivity extends ReservatorActivity
             //	Makes links clickable.
             ((TextView) alertDialog.findViewById(android.R.id.message))
                     .setMovementMethod(LinkMovementMethod.getInstance());
+        } else if (item == OtherUsers) {
+
+            //Dummy implementation
+            Intent i = new Intent(this, OtherUsersActivity.class);
+            startActivity(i);
         }
         return true;
     }

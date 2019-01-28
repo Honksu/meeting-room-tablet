@@ -54,7 +54,9 @@
     <string name="InputBaseURL">Input your base URL here</string>
     <string name="API_Text">API Key</string>
     <string name="InputAPIKey">Input your API key here</string>
-    <string name="recognizeButton">Recognize e!</string>
+    <string name="recognizeButton">Recognize me!</string>
     <string name="EnrollButton">Enroll user</string>
     <string name="LobbyCalendarButton">Calendar</string>
+    <string name="title_activity_other_users">OtherUsersActivity</string>
+    <string name="OtherUsersTitle">Are you among these 4 best matches?</string>
 </resources>
