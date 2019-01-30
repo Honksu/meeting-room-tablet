@@ -58,5 +58,6 @@
     <string name="EnrollButton">Enroll user</string>
     <string name="LobbyCalendarButton">Calendar</string>
     <string name="title_activity_other_users">OtherUsersActivity</string>
-    <string name="OtherUsersTitle">Are you among these 4 best matches?</string>
+    <string name="OtherUsersTitle">Are you among these %1$d best matches?</string>
+    <string name="UsersNameTemplate">User\'s name</string>/string>
 </resources>

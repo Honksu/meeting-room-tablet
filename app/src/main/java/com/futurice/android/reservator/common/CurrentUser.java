@@ -42,7 +42,7 @@ public class CurrentUser {
 
     public void setLoggedIn() {
         user = users.get(0);
-        users.remove(0);
+        //users.remove(0);
     }
 
     public void clearUser() {
@@ -57,6 +57,14 @@ public class CurrentUser {
     public String getUsername() {
         return user.username;
     }
+
+    public String getOtherUserNAme(int nth) {
+
+        user = users.get(nth);
+        return user.username;
+    }
+
+    public int getPeopleNumber() {return users.size(); }
 
     // TODO: add photo from Google account
     public static class User {

@@ -21,25 +21,25 @@
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_marginBottom="10dp"
-        android:text="Button" />
+        android:text="@string/UsersNameTemplate" />
 
     <Button
         android:id="@+id/SecondPerson"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_marginBottom="10dp"
-        android:text="Button" />
+        android:text="@string/UsersNameTemplate" />
 
     <Button
         android:id="@+id/ThirdPerson"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_marginBottom="10dp"
-        android:text="Button" />
+        android:text="@string/UsersNameTemplate" />
 
     <Button
         android:id="@+id/FourthPerson"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:text="Button" />
+        android:text="@string/UsersNameTemplate" />
 </LinearLayout>
