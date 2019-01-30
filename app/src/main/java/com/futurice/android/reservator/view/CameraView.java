@@ -2,6 +2,7 @@ package com.futurice.android.reservator.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Environment;
@@ -11,6 +12,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
+import com.futurice.android.reservator.LandingActivity;
 import com.futurice.android.reservator.common.CurrentUser;
 import com.futurice.android.reservator.model.FaceDetector;
 import com.futurice.android.reservator.model.NaamatauluAPI;
@@ -46,7 +48,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         public void run() {
             CurrentUser.getInstance().clearUser();
             state = State.NO_USER;
-            Toast.makeText(context, "User logged out", Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "User logged out", Toast.LENGTH_LONG).show();
         }
     };
 
@@ -64,14 +66,16 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                             if (manualStop) {
                                 camera.stopFaceDetection();
                             }
-                            Toast.makeText(context, "Recognizing...", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, "Recognizing...", Toast.LENGTH_SHORT).show();
                             break;
                         case RECOGNIZED:
                             for (Camera.Face face : faces) {
                                 if (face.rect.height() > 400) {
                                     CurrentUser.getInstance().setLoggedIn();
                                     state = State.USING;
-                                    Toast.makeText(context, "Hello, " + CurrentUser.getInstance().getUsername(), Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(context, "Hello, " + CurrentUser.getInstance().getUsername(), Toast.LENGTH_LONG).show();
+                                    final Intent i = new Intent(context, LandingActivity.class);
+                                    context.startActivity(i);
                                     break;
                                 }
                             }
@@ -84,7 +88,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                             }
                             if (!closeUser) {
                                 state = State.LOGOUT;
-                                Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
                                 getHandler().postDelayed(clearUser, 5000);
                             }
                             break;
@@ -96,7 +100,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                             }
                             if (closeUser) {
                                 getHandler().removeCallbacks(clearUser);
-                                Toast.makeText(context, "Back again", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(context, "Back again", Toast.LENGTH_SHORT).show();
                                 state = State.USING;
                             }
                     }
@@ -110,7 +114,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                             break;
                         case USING:
                             state = State.LOGOUT;
-                            Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
                             getHandler().postDelayed(clearUser, 5000);
                             break;
                     }
@@ -129,7 +133,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                     File cropped = faceDetector.cropLargestFace(photo.getAbsolutePath());
                     if (cropped == null) {
                         Log.e(TAG, "Cannot get image");
-                        state = State.NO_USER;
+                        startAgain();
                         return;
                     }
                     sendCropped(cropped);
@@ -152,6 +156,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         faceDetector = new FaceDetector(context, (Activity)context);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             manualStop = true;
+        }
+        if (CurrentUser.getInstance().getUsername() != null) {
+            state = State.USING;
         }
     }
 
@@ -203,7 +210,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
             os.write(data);
             os.close();
         } catch (IOException e) {
-            state = State.NO_USER;
+            startAgain();
             Log.e(TAG, "Cannot write to " + e);
         } finally {
             if (os != null) {
@@ -225,21 +232,30 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
             @Override
             public void onUploadCompleted(String result) {
                 if (result == null) {
-                    Toast.makeText(context, "Not identified", Toast.LENGTH_LONG).show();
-                    state = State.NO_USER;
+                    //Toast.makeText(context, "Not identified", Toast.LENGTH_LONG).show();
+                    startAgain();
                     camera.startFaceDetection();
                     return;
                 }
                 if (CurrentUser.getInstance().processJson(result)) {
-                    Toast.makeText(context, "Recognized", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "Recognized", Toast.LENGTH_SHORT).show();
                     state = State.RECOGNIZED;
                 } else {
-                    Toast.makeText(context, "Didn't recognize you", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "Didn't recognize you", Toast.LENGTH_SHORT).show();
                     state = State.NO_USER;
                 }
                 camera.startFaceDetection();
                 takingphoto.set(false);
             }
         }).execute(cropped);
+    }
+
+    private void startAgain() {
+        state = State.NO_USER;
+        takingphoto.set(false);
+        if (!manualStop) {
+            camera.startPreview();
+        }
+        camera.startFaceDetection();
     }
 }
