@@ -31,23 +31,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LandingActivity extends ReservatorActivity {
-    // TODO: remove hardcoded stuff, implement getting user's account via facial recognition
-    private static final String account = "antti@wackymemes.com";
     private String user;
 
     public static final int DAY_START_TIME = 60 * 8; // minutes from midnight
     public static final int DAY_END_TIME = 60 * 20;
 
-    // TODO: implement a proper calendar view for user's meetings
-//    @BindView(R.id.eventContainer)
-//    LinearLayout container;
+
+    @BindView(R.id.notMeButton)
+    Button notMeButton;
     @BindView(R.id.freeRoomsButton)
     Button freeRoomsButton;
-//    @BindView(R.id.cameraLanding)
-//    CameraView cameraView;
+    @BindView(R.id.cameraLanding)
+    CameraView cameraView;
     @BindView(R.id.dayView)
     DayView dayView;
 
+    View.OnClickListener notMeListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            final Intent i = new Intent(LandingActivity.this, OtherUsersActivity.class);
+            startActivity(i);
+        }
+    };
 
     View.OnClickListener freeRoomsOnClickListener = new View.OnClickListener() {
         @Override
@@ -57,31 +62,33 @@ public class LandingActivity extends ReservatorActivity {
         }
     };
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
         ButterKnife.bind(this);
+        notMeButton.setOnClickListener(notMeListener);
         freeRoomsButton.setOnClickListener(freeRoomsOnClickListener);
 
         user = CurrentUser.getInstance().getUsername();
         TextView helloTextView = (TextView) findViewById(R.id.helloTextView);
         helloTextView.setText("Hello, " + user);
 
-        String calendarId = getCalendarId(account);
+        String calendarId = getCalendarId(user);
         setReservations(calendarId);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //cameraView.setVisibility(View.VISIBLE);
+        cameraView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        //cameraView.setVisibility(View.INVISIBLE);
+        cameraView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -160,14 +167,6 @@ public class LandingActivity extends ReservatorActivity {
                     }
                     long eventId = result.getLong(5);
 
-                    // uusi testitoteutus
-                    /*
-                    Reservation res = new Reservation(
-                            Long.toString(eventId) + "-" + Long.toString(start),
-                            title,
-                            new TimeSpan(new DateTime(start), new DateTime(end)));
-                    */
-                    // uusi toteutus
                     PersonalReservation res = new PersonalReservation(
                             Long.toString(eventId) + "-" + Long.toString(start),
                             title,
@@ -177,11 +176,6 @@ public class LandingActivity extends ReservatorActivity {
                     );
                     reservations.add(res);
 
-                    /* vanha listanomainen toteutus
-                    PersonalReservationRowView v = new PersonalReservationRowView(this);
-                    String time = new TimeSpan(new DateTime(start), new DateTime(end)).toString();
-                    v.setEvent(time, location, title, eventOrganizerAccount);
-                    //container.addView(v); */
                 } while (result.moveToNext());
             }
             result.close();
