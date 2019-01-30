@@ -37,9 +37,4 @@
         android:layout_marginBottom="10dp"
         android:text="@string/UsersNameTemplate" />
 
-    <Button
-        android:id="@+id/FourthPerson"
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:text="@string/UsersNameTemplate" />
 </LinearLayout>

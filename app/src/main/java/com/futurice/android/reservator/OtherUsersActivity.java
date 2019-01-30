@@ -20,8 +20,6 @@ public class OtherUsersActivity extends ReservatorActivity {
     Button Second;
     @BindView(R.id.ThirdPerson)
     Button Third;
-    @BindView(R.id.FourthPerson)
-    Button Fourth;
 
 
     @Override
@@ -41,23 +39,15 @@ public class OtherUsersActivity extends ReservatorActivity {
             First.setText(FirstName);
         }
 
-        if (people > 1){
+        if (people > 1) {
             Second.setText(CurrentUser.getInstance().getOtherUserNAme(1));
-        }
-        else {
+        } else {
             Second.setVisibility(Second.GONE);
         }
         if (people > 2) {
             Third.setText(CurrentUser.getInstance().getOtherUserNAme(2));
-        }
-        else {
+        } else {
             Third.setVisibility(Third.GONE);
-        }
-        if (people > 3) {
-            Fourth.setText(CurrentUser.getInstance().getOtherUserNAme(3));
-        }
-        else {
-            Fourth.setVisibility(Fourth.GONE);
         }
     }
 }
