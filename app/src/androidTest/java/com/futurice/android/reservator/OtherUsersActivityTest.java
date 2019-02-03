@@ -30,6 +30,12 @@ import static org.hamcrest.Matchers.allOf;
 @RunWith(AndroidJUnit4.class)
 public class OtherUsersActivityTest {
 
+
+    /* The test assumes that the application has been set up to the device, i.e. the application
+    has all required permissions and the first time login with a proper room account has been done.
+    The used credentials are only temporal test data.
+     */
+
     @Rule
     public ActivityTestRule<CheckPermissionsActivity> mActivityTestRule = new ActivityTestRule<>(CheckPermissionsActivity.class);
 
