@@ -37,9 +37,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".view.OtherUsersActivity"
-            android:label="@string/title_activity_other_users"
+            android:name=".ManualLoginActivity"
+            android:label="@string/title_activity_manual_login"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".OtherUsersActivity"
+            android:label="@string/title_activity_other_users"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LoginActivity"
             android:configChanges="orientation|screenSize"
@@ -92,7 +96,6 @@
         </provider>
 
         <activity android:name=".CameraActivity" />
-        <activity android:name=".OtherUsersActivity" />
     </application>
 
 </manifest>

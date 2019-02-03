@@ -10,7 +10,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 import com.futurice.android.reservator.LandingActivity;
 import com.futurice.android.reservator.common.CurrentUser;
@@ -71,9 +70,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                         case RECOGNIZED:
                             for (Camera.Face face : faces) {
                                 if (face.rect.height() > 400) {
-                                    CurrentUser.getInstance().setLoggedIn();
+                                    CurrentUser.getInstance().setLoggedIn(0);
                                     state = State.USING;
                                     //Toast.makeText(context, "Hello, " + CurrentUser.getInstance().getUsername(), Toast.LENGTH_LONG).show();
+
                                     final Intent i = new Intent(context, LandingActivity.class);
                                     context.startActivity(i);
                                     break;

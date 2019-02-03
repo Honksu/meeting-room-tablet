@@ -54,10 +54,14 @@
     <string name="InputBaseURL">Input your base URL here</string>
     <string name="API_Text">API Key</string>
     <string name="InputAPIKey">Input your API key here</string>
+    <string name="LoginButton">Manual login</string>
     <string name="recognizeButton">Recognize me!</string>
     <string name="EnrollButton">Enroll user</string>
     <string name="LobbyCalendarButton">Calendar</string>
     <string name="title_activity_other_users">OtherUsersActivity</string>
     <string name="OtherUsersTitle">Are you among these %1$d best matches?</string>
-    <string name="UsersNameTemplate">User\'s name</string>/string>
+    <string name="UsersNameTemplate">User\'s name</string>
+    <string name="title_activity_manual_login">ManualLoginActivity</string>/string>
+    <string name="LoginTitle">Here you can log in \n the old way!</string>
+    <string name="LoginDone">Done</string>
 </resources>

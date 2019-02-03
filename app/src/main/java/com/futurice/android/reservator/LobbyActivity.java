@@ -57,6 +57,8 @@ public class LobbyActivity extends ReservatorActivity
     TextView clock;
     @BindView(R.id.linearLayout1)
     LinearLayout container;
+    @BindView(R.id.LoginButton)
+    Button LoginButton;
     @BindView(R.id.recognizeButton)
     Button recognizeButton;
     @BindView(R.id.enrollButton)
@@ -66,7 +68,15 @@ public class LobbyActivity extends ReservatorActivity
     @BindView((R.id.cameraLobby))
     CameraView cameraView;
 
-    View.OnClickListener recognizeOnClickListerner = new View.OnClickListener() {
+    View.OnClickListener LoginOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            final Intent i = new Intent(LobbyActivity.this, ManualLoginActivity.class);
+            startActivity(i);
+        }
+    };
+
+    View.OnClickListener recognizeOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             final Intent i = new Intent(LobbyActivity.this, CameraActivity.class);
@@ -98,9 +108,10 @@ public class LobbyActivity extends ReservatorActivity
         ab = getResApplication().getAddressBook();
         clock.setTypeface(
                 Typeface.createFromAsset(getAssets(), "fonts/EHSMB.TTF"));
-        //recognizeButton.setOnClickListener(recognizeOnClickListerner);
+        //recognizeButton.setOnClickListener(recognizeOnClickListener);
         enrollButton.setOnClickListener(enrollOnClickListener);
         calendarButton.setOnClickListener(calendarOnClickListener);
+        LoginButton.setOnClickListener(LoginOnClickListener);
     }
 
     @Override
@@ -256,7 +267,8 @@ public class LobbyActivity extends ReservatorActivity
                     .setMovementMethod(LinkMovementMethod.getInstance());
         } else if (item == OtherUsers) {
 
-            //Dummy implementation
+            /* Takes the user to the selection screen of best matches in case of
+             * false recognition */
             Intent i = new Intent(this, OtherUsersActivity.class);
             startActivity(i);
         }

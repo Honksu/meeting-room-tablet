@@ -40,9 +40,14 @@ public class CurrentUser {
         return !users.isEmpty();
     }
 
-    public void setLoggedIn() {
-        user = users.get(0);
+    public void setLoggedIn(int nth) {
+        user = users.get(nth);
         //users.remove(0);
+    }
+
+    public void setManualLoggedIn(CurrentUser.User manual) {
+
+        user = manual;
     }
 
     public void clearUser() {
@@ -58,7 +63,7 @@ public class CurrentUser {
         return user.username;
     }
 
-    public String getOtherUserNAme(int nth) {
+    public String getOtherUserName(int nth) {
 
         user = users.get(nth);
         return user.username;
@@ -85,6 +90,11 @@ public class CurrentUser {
         }
 
         public User() { this(0, null, null, null); }
+
+        public int getUserId() { return id; }
+        public void setUserId(int id) {
+            this.id = id;
+        }
 
         public String getUsername() { return username; }
         public void setUsername(String username) {

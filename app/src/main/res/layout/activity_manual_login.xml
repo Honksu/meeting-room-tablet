@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.futurice.android.reservator.ManualLoginActivity">
+
+    <TextView
+        android:id="@+id/LoginTitle"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginBottom="100dp"
+        android:gravity="center"
+        android:text="@string/LoginTitle"
+        android:textColor="@color/CalendarTextColor"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/EmailInput"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:ems="10"
+        android:hint="Enter your email here"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/ManualLoginDone"
+        android:layout_width="134dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="50dp"
+        android:text="@string/LoginDone" />
+</LinearLayout>

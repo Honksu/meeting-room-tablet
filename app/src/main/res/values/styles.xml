@@ -7,7 +7,7 @@
     </style>
 
     <color name="CalendarBorderColor">#ccc</color>
-    <color name="CalendarTextColor">#000</color>
+    <color name="CalendarTextColor">#000000</color>
     <color name="CalendarResTextColor">#fff</color>
     <color name="StatusFreeColor">#529200</color>
     <color name="StatusReservedColor">#b24c4c</color>

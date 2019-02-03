@@ -11,10 +11,11 @@
         android:id="@+id/UsersTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/OtherUsersTitle"
+        android:layout_marginBottom="25dp"
         android:gravity="center"
-        android:textSize="30sp"
-        android:layout_marginBottom="25dp"/>
+        android:text="@string/OtherUsersTitle"
+        android:textColor="@color/CalendarTextColor"
+        android:textSize="30sp" />
 
     <Button
         android:id="@+id/FirstPerson"

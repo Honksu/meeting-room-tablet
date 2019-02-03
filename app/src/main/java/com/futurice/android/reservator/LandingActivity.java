@@ -1,18 +1,16 @@
 package com.futurice.android.reservator;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.CalendarContract;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.futurice.android.reservator.common.CurrentUser;
@@ -21,7 +19,6 @@ import com.futurice.android.reservator.model.PersonalReservation;
 import com.futurice.android.reservator.model.TimeSpan;
 import com.futurice.android.reservator.view.CameraView;
 import com.futurice.android.reservator.view.DayView;
-import com.futurice.android.reservator.view.PersonalReservationRowView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,7 +73,9 @@ public class LandingActivity extends ReservatorActivity {
         helloTextView.setText("Hello, " + user);
 
         String calendarId = getCalendarId(user);
+
         setReservations(calendarId);
+
     }
 
     @Override
