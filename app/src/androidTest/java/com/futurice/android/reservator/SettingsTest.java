@@ -17,52 +17,58 @@ import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class CheckRoomCalendarTest {
+public class SettingsTest {
 
     @Rule
     public ActivityTestRule<CheckPermissionsActivity> mActivityTestRule = new ActivityTestRule<>(CheckPermissionsActivity.class);
 
     @Test
-    public void checkRoomCalendarTest() {
+    public void settingsTest() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
-            Thread.sleep(3000);
+            Thread.sleep(2500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        onView(withText("antti@wackymemes.com")).perform(click());
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ViewInteraction button = onView(
-                allOf(withId(R.id.seeAllRoomsButton),
+        ViewInteraction textView = onView(
+                allOf(withId(android.R.id.title), withText("Settings"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
+                                        withClassName(is("com.android.internal.view.menu.ListMenuItemView")),
                                         0),
-                                3),
+                                0),
                         isDisplayed()));
-        button.check(matches(isDisplayed()));
+        textView.perform(click());
+
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.InputBaseURL))).perform(scrollTo());
+
+        textView2.perform(click());
+
+        ViewInteraction editText = onView(
+                allOf(withId(R.id.InputAPIKey))).perform(scrollTo());
+
+        editText.perform(pressImeActionButton());
     }
 
     private static Matcher<View> childAtPosition(
