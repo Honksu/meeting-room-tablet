@@ -38,6 +38,17 @@
             android:layout_height="match_parent" />
     </com.futurice.android.reservator.view.DayView>
 
+    <TextView
+        android:id="@+id/noCalendarTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        android:text="Unfortunately we couldn't find your calendar"
+        android:textColor="@color/TextColor"
+        android:textSize="24sp"
+        android:visibility="gone" />
+
 
     <Button
         android:id="@+id/notMeButton"

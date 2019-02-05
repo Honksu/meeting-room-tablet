@@ -71,10 +71,18 @@
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".LandingActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".EnrollActivity"
             android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".CameraActivity"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".FreeRoomsActivity"
+            android:screenOrientation="sensorLandscape" />
+
         <activity
             android:name=".CheckPermissionsActivity"
             android:theme="@style/Theme.AppCompat">
@@ -94,8 +102,5 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
-        <activity android:name=".CameraActivity" />
     </application>
-
 </manifest>

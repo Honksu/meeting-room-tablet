@@ -33,7 +33,6 @@ public class LandingActivity extends ReservatorActivity {
     public static final int DAY_START_TIME = 60 * 8; // minutes from midnight
     public static final int DAY_END_TIME = 60 * 20;
 
-
     @BindView(R.id.notMeButton)
     Button notMeButton;
     @BindView(R.id.freeRoomsButton)
@@ -42,6 +41,8 @@ public class LandingActivity extends ReservatorActivity {
     CameraView cameraView;
     @BindView(R.id.dayView)
     DayView dayView;
+    @BindView(R.id.noCalendarTextView)
+    TextView noCalendar;
 
     View.OnClickListener notMeListener = new View.OnClickListener() {
         @Override
@@ -74,8 +75,12 @@ public class LandingActivity extends ReservatorActivity {
 
         String calendarId = getCalendarId(user);
 
-        setReservations(calendarId);
-
+        if (calendarId != null) {
+            setReservations(calendarId);
+        } else {
+            dayView.setVisibility(View.INVISIBLE);
+            noCalendar.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -114,8 +119,10 @@ public class LandingActivity extends ReservatorActivity {
         );
         String calendarId = null;
         if (result != null) {
-            result.moveToFirst();
-            calendarId = result.getString(0);
+            if (result.getCount() > 0) {
+                result.moveToFirst();
+                calendarId = result.getString(0);
+            }
         }
         return calendarId;
     };
