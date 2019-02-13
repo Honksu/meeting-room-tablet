@@ -1,25 +1,46 @@
 package com.futurice.android.reservator;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.futurice.android.reservator.common.CalendarHelper;
 import com.futurice.android.reservator.common.CurrentUser;
+import com.futurice.android.reservator.common.PreferenceManager;
 import com.futurice.android.reservator.model.DateTime;
 import com.futurice.android.reservator.model.PersonalReservation;
 import com.futurice.android.reservator.model.TimeSpan;
 import com.futurice.android.reservator.view.CameraView;
 import com.futurice.android.reservator.view.DayView;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
+import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.Events;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -27,9 +48,16 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LandingActivity extends ReservatorActivity {
+public class LandingActivity extends AppCompatActivity/* implements GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks*/ {
+    private static final String TAG = "LandingActivity";
     private String user;
 
+    /* for Calendar API
+    private GoogleApiClient googleApiClient;
+    private final int RC_INTENT = 34;
+    private final int RC_API_CHECK = 91;
+*/
     public static final int DAY_START_TIME = 60 * 8; // minutes from midnight
     public static final int DAY_END_TIME = 60 * 20;
 
@@ -73,6 +101,27 @@ public class LandingActivity extends ReservatorActivity {
         TextView helloTextView = (TextView) findViewById(R.id.helloTextView);
         helloTextView.setText("Hello, " + user);
 
+/*  for Calendar API
+    Based on https://github.com/Suleiman19/People-API-App
+
+        dayView.setVisibility(View.INVISIBLE);
+
+        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestServerAuthCode(PreferenceManager.getInstance(this).getClientId())
+                .requestEmail()
+                .requestScopes(new Scope(Scopes.PLUS_LOGIN),
+                        new Scope(CalendarScopes.CALENDAR_EVENTS_READONLY))
+                .build();
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addOnConnectionFailedListener(this)
+                .addConnectionCallbacks(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions)
+                .build();
+*/
+
+        // CalendarContract implementation
         String calendarId = getCalendarId(user);
 
         if (calendarId != null) {
@@ -82,6 +131,13 @@ public class LandingActivity extends ReservatorActivity {
             noCalendar.setVisibility(View.VISIBLE);
         }
     }
+
+    /* Calendar API
+    @Override
+    protected void onStart() {
+        super.onStart();
+        googleApiClient.connect();
+    } */
 
     @Override
     public void onResume() {
@@ -95,10 +151,11 @@ public class LandingActivity extends ReservatorActivity {
         cameraView.setVisibility(View.INVISIBLE);
     }
 
-    @Override
-    protected Boolean isPrehensible() { return false; }
 
     private String getCalendarId(String name) {
+        if (name == null) {
+            return null;
+        }
         String mProjection[] = {CalendarContract.Calendars._ID};
         String mSelectionClause = CalendarContract.Calendars.NAME + " = ?";
         String mSelectionArgs[] = {name};
@@ -125,7 +182,7 @@ public class LandingActivity extends ReservatorActivity {
             }
         }
         return calendarId;
-    };
+    }
 
     private void setReservations(String calendarId) {
         String[] mProjection = {
@@ -187,6 +244,73 @@ public class LandingActivity extends ReservatorActivity {
             result.close();
         }
         dayView.refreshData(reservations);
-    };
+    }
 
+
+    /* Calendar API
+    private void getIdToken() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(signInIntent, RC_INTENT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case RC_INTENT:
+                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+
+                if (result.isSuccess()) {
+                    GoogleSignInAccount acct = result.getSignInAccount();
+                    Log.d(TAG, "onActivityResult:GET_TOKEN:success:" + result.getStatus().isSuccess());
+                    // This is what we need to exchange with the server.
+                    Log.d(TAG, "auth Code:" + acct.getServerAuthCode());
+
+                    new CalendarAsync().execute(acct.getServerAuthCode());
+
+                } else {
+                    Log.d(TAG, result.getStatus().toString() + "\nmsg: " + result.getStatus().getStatusMessage());
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        getIdToken();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        GoogleApiAvailability mGoogleApiAvailability = GoogleApiAvailability.getInstance();
+        Dialog dialog = mGoogleApiAvailability.getErrorDialog(this, connectionResult.getErrorCode(), RC_API_CHECK);
+        dialog.show();
+    }
+
+    class CalendarAsync extends AsyncTask<String, Void, List<String>> {
+
+        @Override
+        protected List<String> doInBackground(String... params) {
+            List<String> eventList = new ArrayList<>();
+            try {
+                com.google.api.services.calendar.Calendar calendarService = CalendarHelper.setUp(LandingActivity.this, params[0]);
+                Events events = calendarService.events().list("antti@wackymemes.com")
+                        .setOrderBy("startTime")
+                        .setSingleEvents(true)
+                        .execute();
+                List<Event> items = events.getItems();
+                int j = items.size();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+    */
 }

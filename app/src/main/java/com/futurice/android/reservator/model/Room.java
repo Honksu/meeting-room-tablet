@@ -63,8 +63,10 @@ public class Room implements Serializable {
 
             building = properties[0];
             floor = properties[1];
-            if (parts == 4) {
+            if (parts > 3) {
                 area = properties[2];
+            } else {
+                area = "-";
             }
             shortName = properties[parts - 1].trim();
         }

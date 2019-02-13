@@ -12,6 +12,7 @@ android {
         versionName "5.1.3"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        multiDexEnabled true
 
         testApplicationId "com.futurice.android.reservator.test"
         //testInstrumentationRunner "android.test.InstrumentationTestRunner"
@@ -33,6 +34,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE.txt'
@@ -75,14 +77,19 @@ android {
         implementation 'com.fasterxml.jackson.core:jackson-core:2.8.5'
         implementation 'com.fasterxml.jackson.core:jackson-annotations:2.8.5'
         annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.butterknifeVersion"
-
+        implementation 'com.google.android.gms:play-services-plus:16.0.0'
+        implementation 'com.google.android.gms:play-services-auth:16.0.1'
+        implementation 'com.google.api-client:google-api-client:1.25.0'
+        implementation 'com.google.apis:google-api-services-calendar:v3-rev364-1.25.0'
+        implementation 'com.android.support:multidex:1.0.3'
+        compile 'com.google.apis:google-api-services-people:v1-rev2-1.21.0'
     }
 }
 
 dependencies {
     implementation project(':openCVLibrary343')
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.android.support:design:27.1.1'
+    //implementation 'com.android.support:design:27.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     androidTestImplementation "androidx.test.ext:junit:1.0.0"
     //androidTestImplementation 'androidx.test:runner:1.1.0'

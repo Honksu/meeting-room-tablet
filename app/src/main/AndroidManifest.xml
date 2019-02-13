@@ -38,11 +38,9 @@
         android:supportsRtl="true">
         <activity
             android:name=".ManualLoginActivity"
-            android:label="@string/title_activity_manual_login"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".OtherUsersActivity"
-            android:label="@string/title_activity_other_users"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LoginActivity"
@@ -72,7 +70,8 @@
         <activity
             android:name=".LandingActivity"
             android:hardwareAccelerated="false"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.AppCompat" />
         <activity
             android:name=".EnrollActivity"
             android:screenOrientation="sensorLandscape" />

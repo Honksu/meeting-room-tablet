@@ -35,6 +35,9 @@ public class PreferenceManager {
     final static String PREFERENCES_BACKEND_BASE_URL = "baseUrl";
     final static String PREFERENCES_BACKEND_AUTH_TOKEN = "authToken";
 
+    // TODO: move these to a keystore - these are example values of a now defunct app
+    private final static String CLIENT_ID = "278412008591-4ii94o4vl360fkq66ldhlaikgupgal2o.apps.googleusercontent.com";
+    private final static String CLIENT_SECRET = "GrsyzU_12Wg36sR88VCfLNQ4";
 
     final SharedPreferences preferences;
 
@@ -153,4 +156,7 @@ public class PreferenceManager {
         editor.putString(PREFERENCES_BACKEND_AUTH_TOKEN, token);
         editor.apply();
     }
+
+    public String getClientId() { return CLIENT_ID; }
+    public String getClientSecret() { return CLIENT_SECRET; }
 }

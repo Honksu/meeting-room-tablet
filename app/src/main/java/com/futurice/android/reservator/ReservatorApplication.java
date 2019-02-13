@@ -4,6 +4,7 @@ import android.accounts.AccountManager;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.support.multidex.MultiDexApplication;
 
 import com.futurice.android.reservator.common.PreferenceManager;
 import com.futurice.android.reservator.model.AddressBook;
@@ -11,7 +12,7 @@ import com.futurice.android.reservator.model.DataProxy;
 import com.futurice.android.reservator.model.platformcalendar.PlatformCalendarDataProxy;
 import com.futurice.android.reservator.model.platformcontacts.PlatformContactsAddressBook;
 
-public class ReservatorApplication extends Application {
+public class ReservatorApplication extends MultiDexApplication {
     private final long ADDRESS_CACHE_CLEAR_INTERVAL = 6 * 60 * 60 * 1000; // Once every six hours
     Runnable clearAddressCache = new Runnable() {
         @Override
