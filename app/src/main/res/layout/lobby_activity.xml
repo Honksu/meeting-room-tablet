@@ -24,22 +24,21 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/recognizeButton"
-            android:layout_width="wrap_content"
+            android:id="@+id/LoginButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Recognize me!" />
-
+            android:text="@string/LoginButton" />
         <Button
             android:id="@+id/enrollButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enroll user" />
+            android:text="@string/EnrollButton" />
 
         <Button
             android:id="@+id/calendarButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Calendar" />
+            android:text="@string/LobbyCalendarButton" />
 
         <DigitalClock
             android:id="@+id/digitalClock1"

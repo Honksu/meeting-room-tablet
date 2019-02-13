@@ -47,7 +47,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         public void run() {
             CurrentUser.getInstance().clearUser();
             state = State.NO_USER;
-            //Toast.makeText(context, "User logged out", Toast.LENGTH_LONG).show();
         }
     };
 
@@ -65,14 +64,12 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                             if (manualStop) {
                                 camera.stopFaceDetection();
                             }
-                            //Toast.makeText(context, "Recognizing...", Toast.LENGTH_SHORT).show();
                             break;
                         case RECOGNIZED:
                             for (Camera.Face face : faces) {
                                 if (face.rect.height() > 400) {
                                     CurrentUser.getInstance().setLoggedIn(0);
                                     state = State.USING;
-                                    //Toast.makeText(context, "Hello, " + CurrentUser.getInstance().getUsername(), Toast.LENGTH_LONG).show();
 
                                     final Intent i = new Intent(context, LandingActivity.class);
                                     context.startActivity(i);
@@ -88,7 +85,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                             }
                             if (!closeUser) {
                                 state = State.LOGOUT;
-                                //Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
                                 getHandler().postDelayed(clearUser, 5000);
                             }
                             break;
@@ -100,7 +96,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                             }
                             if (closeUser) {
                                 getHandler().removeCallbacks(clearUser);
-                                //Toast.makeText(context, "Back again", Toast.LENGTH_SHORT).show();
                                 state = State.USING;
                             }
                     }
@@ -114,7 +109,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                             break;
                         case USING:
                             state = State.LOGOUT;
-                            //Toast.makeText(context, "Logging out...", Toast.LENGTH_SHORT).show();
                             getHandler().postDelayed(clearUser, 5000);
                             break;
                     }
@@ -147,7 +141,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
     public CameraView(Context context, AttributeSet attrs) { this(context, attrs, 0); }
 
-    // TODO: luodaan uusi cameraview activityn vaihtuessa -> täytyy tarkistaa currentuserilta onko joku aktiivisena
     public CameraView(Context context, AttributeSet attrs, int defStyleattr) {
         super(context, attrs, defStyleattr);
         holder = getHolder();
@@ -232,16 +225,12 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
             @Override
             public void onUploadCompleted(String result) {
                 if (result == null) {
-                    //Toast.makeText(context, "Not identified", Toast.LENGTH_LONG).show();
                     startAgain();
-                    camera.startFaceDetection();
                     return;
                 }
                 if (CurrentUser.getInstance().processJson(result)) {
-                    //Toast.makeText(context, "Recognized", Toast.LENGTH_SHORT).show();
                     state = State.RECOGNIZED;
                 } else {
-                    //Toast.makeText(context, "Didn't recognize you", Toast.LENGTH_SHORT).show();
                     state = State.NO_USER;
                 }
                 camera.startFaceDetection();

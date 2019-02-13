@@ -74,7 +74,7 @@ public class FreeRoomsActivity extends ReservatorActivity implements DataUpdated
         }
 
         for (Room r : rooms) {
-            if (hiddenRooms.contains(r.getName()) || r.equals(thisRoom)) {
+            if (hiddenRooms.contains(r.getName()) || r.equals(thisRoom) || r.getBuilding() == null) {
                 continue;
             }
 
@@ -129,12 +129,8 @@ public class FreeRoomsActivity extends ReservatorActivity implements DataUpdated
     private class RoomLocationComparator implements Comparator<Room> {
         @Override
         public int compare(Room thisRoom, Room otherRoom) {
-            String a = thisRoom.getBuilding();
-            String b = otherRoom.getBuilding();
-            int c = thisRoom.getFloor();
-            int d = otherRoom.getFloor();
             if (!thisRoom.getBuilding().equals(otherRoom.getBuilding())
-                    || thisRoom.getFloor() != otherRoom.getFloor()) {
+                    || !thisRoom.getFloor().equals(otherRoom.getFloor())) {
                 return -1;
             } else if (!thisRoom.getArea().equals(otherRoom.getArea())) {
                 return 1;

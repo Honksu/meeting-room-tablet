@@ -59,8 +59,6 @@ public class LobbyActivity extends ReservatorActivity
     LinearLayout container;
     @BindView(R.id.LoginButton)
     Button LoginButton;
-    @BindView(R.id.recognizeButton)
-    Button recognizeButton;
     @BindView(R.id.enrollButton)
     Button enrollButton;
     @BindView(R.id.calendarButton)
@@ -75,15 +73,6 @@ public class LobbyActivity extends ReservatorActivity
             startActivity(i);
         }
     };
-
-    View.OnClickListener recognizeOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            final Intent i = new Intent(LobbyActivity.this, CameraActivity.class);
-            startActivity(i);
-        }
-    };
-
     View.OnClickListener enrollOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -108,7 +97,6 @@ public class LobbyActivity extends ReservatorActivity
         ab = getResApplication().getAddressBook();
         clock.setTypeface(
                 Typeface.createFromAsset(getAssets(), "fonts/EHSMB.TTF"));
-        //recognizeButton.setOnClickListener(recognizeOnClickListener);
         enrollButton.setOnClickListener(enrollOnClickListener);
         calendarButton.setOnClickListener(calendarOnClickListener);
         LoginButton.setOnClickListener(LoginOnClickListener);

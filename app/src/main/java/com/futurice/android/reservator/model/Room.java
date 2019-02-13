@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import com.futurice.android.reservator.common.Helpers;
 import com.futurice.android.reservator.common.PreferenceManager;
@@ -18,8 +19,7 @@ public class Room implements Serializable {
     // Rooms that are free for this long to future are considered "free"
     static private final int FREE_THRESHOLD_MINUTES = 180;
     private String name, email;
-    private String building, area, shortName;
-    private int floor;
+    private String building, floor, area, shortName;
     private Vector<Reservation> reservations;
 
     //public Vector<Reservation> getReservations(){
@@ -34,18 +34,39 @@ public class Room implements Serializable {
 
         // Resource account's email ends in @resource.calendar.google.com
         // Account's name consist of resources location and other data
+        // This is based on existing Futurice resource names and Google's
+        // recommendations (https://support.google.com/a/answer/1033941?hl=en&ref_topic=1034362)
+
         String[] isResource = email.split("@");
         if (isResource[isResource.length - 1].equals("resource.calendar.google.com")) {
-            String[] properties = name.split("-");
-            building = properties[0];
-            floor = Integer.valueOf(properties[1]);
+            // This is a non-room resource -> doesn't appear in nearest rooms search
+            if (name.startsWith("(")) {
+                building = null;
+                return;
+            }
+
+            String nameStr;
+            if (!name.contains("(")) {
+                capacity = 0;
+                nameStr = name;
+            } else {
+                // This assumes that the name might have parenthesis in it (eg. Tre-5-3x2 (VR) (3))
+                // and the last pair has the capacity information
+                int startCap = name.lastIndexOf("(");
+                int endCap = name.lastIndexOf(")");
+                capacity = Integer.valueOf(name.substring(startCap + 1, endCap));
+                nameStr = name.substring(0, startCap);
+            }
+
+            String[] properties = nameStr.split("-");
             int parts = properties.length;
+
+            building = properties[0];
+            floor = properties[1];
             if (parts == 4) {
                 area = properties[2];
             }
-            String[] finalParts = properties[parts - 1].split("\\(");
-            shortName = finalParts[0].trim();
-            capacity = Integer.valueOf(finalParts[1].replaceAll("[^0-9]", ""));
+            shortName = properties[parts - 1].trim();
         }
     }
 
@@ -61,7 +82,7 @@ public class Room implements Serializable {
     public String getBuilding() { return building; }
     public String getArea() { return area; }
     public String getShortName() { return shortName; }
-    public int getFloor() { return floor; }
+    public String getFloor() { return floor; }
 
     public void setReservations(Vector<Reservation> reservations) {
         this.reservations = reservations;
